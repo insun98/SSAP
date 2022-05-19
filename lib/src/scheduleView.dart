@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Color(0xFFB9C98C),
               )),
           IconButton(
-              onPressed: () {},
+              onPressed: () {Navigator.pushNamed(context, '/addGroup');},
               icon: const Icon(
                 Icons.person_add_alt_1,
                 color: Color(0xFFB9C98C),

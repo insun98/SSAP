@@ -39,12 +39,13 @@ class _AddGroupPageState extends State<AddGroupPage> {
         backgroundColor: Colors.transparent,
         bottomOpacity: 0.0,
         elevation: 0.0,
+        title:Text('Group',style: TextStyle(color:Colors.black),),
         leading: IconButton(
           icon: const Icon(
             Icons.cancel,
             color: Colors.grey,
           ),
-          onPressed: () {},
+          onPressed: () {Navigator.pop(context);},
         ),
         actions: <Widget>[
           Container(
@@ -58,7 +59,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            RadioGroup(groupMembers: groupMembers)));
+                            AddGroupPage2(groupMembers: groupMembers)));
               },
             ),
           ),
@@ -109,18 +110,15 @@ class _AddGroupPageState extends State<AddGroupPage> {
   }
 }
 
-class RadioGroup extends StatefulWidget {
+class AddGroupPage2 extends StatefulWidget {
   final List<User> groupMembers;
-  const RadioGroup({required this.groupMembers});
+  const AddGroupPage2({required this.groupMembers});
   @override
-  RadioGroupWidget createState() => RadioGroupWidget();
+  _AddGroupPageState2 createState() => _AddGroupPageState2();
 }
 
-class RadioGroupWidget extends State<RadioGroup> {
-  // Default Radio Button Item
-  String radioItem = 'intothesun98';
+class _AddGroupPageState2 extends State<AddGroupPage2> {
 
-  // Group Value for Radio Button.
   int id = 1;
   final _controller = TextEditingController();
   Schedule schedule = Schedule(title: "", dateTime: "");
@@ -132,13 +130,14 @@ class RadioGroupWidget extends State<RadioGroup> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         bottomOpacity: 0.0,
+        title:Text('Group',style: TextStyle(color:Colors.black),),
         elevation: 0.0,
         leading: IconButton(
           icon: const Icon(
             Icons.cancel,
             color: Colors.grey,
           ),
-          onPressed: () {},
+          onPressed: () {Navigator.pushNamed(context,'/home');},
         ),
         actions: <Widget>[
           Container(

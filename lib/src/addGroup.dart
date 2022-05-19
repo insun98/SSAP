@@ -18,14 +18,14 @@ import 'package:shrine/src/ViewGroup.dart';
 
 import '../Provider/GroupProvider.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class AddGroupPage extends StatefulWidget {
+  const AddGroupPage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _AddGroupPageState createState() => _AddGroupPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _AddGroupPageState extends State<AddGroupPage> {
   final _controller = TextEditingController();
   List<User> groupMembers = [];
 

@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shrine/src/home.dart';
+
 
 import '../Provider/GroupProvider.dart';
+import 'addGroup.dart';
 
 class ViewGroup extends StatefulWidget {
   final groupInfo group;

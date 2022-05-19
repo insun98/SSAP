@@ -29,13 +29,14 @@ class GroupProvider extends ChangeNotifier {
 
 
     final storageRef = FirebaseStorage.instance.ref();
-    final filename = "defaultimage.png";
+    const filename = "defaultimage.png";
     final mountainsRef = storageRef.child(filename);
     value = newValue;
     if (value == "ASC") {
       order = false;
-    } else
+    } else {
       order = true;
+    }
 
     final downloadUrl = await mountainsRef.getDownloadURL();
     _defaultImage = downloadUrl;
@@ -100,7 +101,7 @@ class GroupProvider extends ChangeNotifier {
   Like _like = Like.unlike;
 
   int _likenumber = 0;
-  int _userExist = 0;
+  final int _userExist = 0;
   int get attendees => _likenumber;
 
   Like checkLike(String docId) {
@@ -145,14 +146,16 @@ class GroupProvider extends ChangeNotifier {
        .where('id', isGreaterThanOrEqualTo: userId)
         .snapshots()
         .listen((snapshot) {
-      if (snapshot.docs.length >0 ) {
+      if (snapshot.docs.isNotEmpty ) {
         user.name = snapshot.docs[0].data()['name'];
         user.Userid = snapshot.docs[0].data()['id'];
 
 
         notifyListeners();
 
-      }else  return null;
+      }else {
+        return;
+      }
     });
     return user;
 
@@ -217,7 +220,7 @@ class GroupProvider extends ChangeNotifier {
     final storageRef = FirebaseStorage.instance.ref();
     final filename = "${DateTime.now().millisecondsSinceEpoch}.png";
     final mountainsRef = storageRef.child(filename);
-    final mountainImagesRef = storageRef.child("images/${filename}");
+    final mountainImagesRef = storageRef.child("images/$filename");
     File file = File(image.path);
     await mountainsRef.putFile(file);
     final downloadUrl = await mountainsRef.getDownloadURL();

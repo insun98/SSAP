@@ -15,11 +15,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shrine/Provider/LoginProvider.dart';
+
 
 import 'Provider/GroupProvider.dart';
 
 
+import 'Provider/scheduleProvider.dart';
 import 'app.dart';
 
 
@@ -36,11 +37,11 @@ class Myapp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<GroupProvider>(
             create: (_) => GroupProvider()),
-        ChangeNotifierProvider<LoginProvider>(
-            create: (_) => LoginProvider()),
+        ChangeNotifierProvider<ScheduleProvider>(
+            create: (_) => ScheduleProvider()),
 
       ],
-      child: ShrineApp(),
+      child: const ShrineApp(),
     );
   }
 }

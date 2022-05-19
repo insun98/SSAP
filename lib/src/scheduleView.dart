@@ -1,17 +1,10 @@
-import 'dart:async';
-import 'dart:math';
-import 'dart:ui';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:firebase_core/firebase_core.dart';
-import '../firebase_options.dart';
 //import 'package:ntp/ntp.dart';
 import '../Provider/scheduleProvider.dart';
 
@@ -240,7 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 transitionBuilder: (context, anim1, anim2, child) {
                   return SlideTransition(
-                    position: Tween(begin: Offset(0, 1), end: Offset(0, 0))
+                    position: Tween(begin: const Offset(0, 1), end: const Offset(0, 0))
                         .animate(anim1),
                     child: child,
                   );
@@ -257,14 +250,14 @@ class _MyHomePageState extends State<MyHomePage> {
             barrierLabel: "Label",
             barrierDismissible: true,
             barrierColor: Colors.black.withOpacity(0.5),
-            transitionDuration: Duration(milliseconds: 300),
+            transitionDuration: const Duration(milliseconds: 300),
             context: context,
             pageBuilder: (context, anim1, anim2) {
               return const AddSchedule();
             },
             transitionBuilder: (context, anim1, anim2, child) {
               return SlideTransition(
-                position: Tween(begin: Offset(0, 1), end: Offset(0, 0))
+                position: Tween(begin: const Offset(0, 1), end: const Offset(0, 0))
                     .animate(anim1),
                 child: child,
               );

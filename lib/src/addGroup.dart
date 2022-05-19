@@ -31,6 +31,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
 
   String name = "";
   User user = User(Userid: "", name: "", index: 0, uid: "");
+  @override
   Widget build(BuildContext context) {
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
     return Scaffold(
@@ -39,7 +40,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
         bottomOpacity: 0.0,
         elevation: 0.0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.cancel,
             color: Colors.grey,
           ),
@@ -47,10 +48,10 @@ class _AddGroupPageState extends State<AddGroupPage> {
         ),
         actions: <Widget>[
           Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: ElevatedButton(
-              child: Text('OK'),
-              style: ElevatedButton.styleFrom(primary: Color(0xFFB9C98C)),
+              child: const Text('OK'),
+              style: ElevatedButton.styleFrom(primary: const Color(0xFFB9C98C)),
               onPressed: () async {
 
                 Navigator.push(
@@ -67,7 +68,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
         child: Center(
           child: Consumer<GroupProvider>(
             builder: (context, group, _) => Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
                   TextFormField(
@@ -124,6 +125,7 @@ class RadioGroupWidget extends State<RadioGroup> {
   final _controller = TextEditingController();
   Schedule schedule = Schedule(title: "", dateTime: "");
   groupInfo group = groupInfo(groupName: "", schedule: "", members: []);
+  @override
   Widget build(BuildContext context) {
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
     return Scaffold(
@@ -132,7 +134,7 @@ class RadioGroupWidget extends State<RadioGroup> {
         bottomOpacity: 0.0,
         elevation: 0.0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.cancel,
             color: Colors.grey,
           ),
@@ -140,10 +142,10 @@ class RadioGroupWidget extends State<RadioGroup> {
         ),
         actions: <Widget>[
           Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: ElevatedButton(
-              child: Text('OK'),
-              style: ElevatedButton.styleFrom(primary: Color(0xFFB9C98C)),
+              child: const Text('OK'),
+              style: ElevatedButton.styleFrom(primary: const Color(0xFFB9C98C)),
               onPressed: () async {group.members = widget.groupMembers; print(group.members[0].name);group.groupName= _controller.text;groupProvider.addGroup(widget.groupMembers, _controller.text);  Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -156,23 +158,23 @@ class RadioGroupWidget extends State<RadioGroup> {
       body: SafeArea(
         child: Center(
           child: Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Column(
               children: [
                 TextFormField(
                   controller: _controller,
-                  decoration:  InputDecoration(
+                  decoration:  const InputDecoration(
                     hintText:  'GroupName',
                   ),
                 ),
-                SizedBox(height:20),
+                const SizedBox(height:20),
                 SizedBox(
                   height:500,
                 child:ListView.separated(
                         padding: const EdgeInsets.all(8),
                         itemCount: widget.groupMembers.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return Container(
+                          return SizedBox(
                             height: 30,
                             child: Text(
                                 "${widget.groupMembers[index].name}(${widget.groupMembers[index].Userid})"),
@@ -180,7 +182,7 @@ class RadioGroupWidget extends State<RadioGroup> {
 
                         },
                   separatorBuilder: (BuildContext context, int index) {
-                    return Divider();
+                    return const Divider();
                   },
                       )
                 ),

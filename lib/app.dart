@@ -13,15 +13,11 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:shrine/src/addGroup.dart';
 
 
 
-import 'package:provider/provider.dart';
 import 'package:shrine/src/scheduleView.dart';
-import 'firebase_options.dart';
 import 'src/login.dart';
 
 
@@ -38,8 +34,8 @@ class ShrineApp extends StatelessWidget {
       routes: {
         // '/login': (BuildContext context) => LoginPage(),
         // TODO: Change to a Backdrop with a HomePage frontLayer (104)
-        '/': (BuildContext context) => const AddGroupPage(),
-        '/login': (BuildContext context) => LoginPage(),
+        '/addGroup': (BuildContext context) => const AddGroupPage(),
+        '/login': (BuildContext context) => const LoginWidget(),
         '/home': (BuildContext context) => const MyHomePage(),
 
 

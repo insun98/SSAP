@@ -20,6 +20,7 @@ import 'package:shrine/src/addGroup.dart';
 
 
 import 'package:provider/provider.dart';
+import 'package:shrine/src/scheduleView.dart';
 import 'firebase_options.dart';
 import 'src/login.dart';
 
@@ -37,8 +38,10 @@ class ShrineApp extends StatelessWidget {
       routes: {
         // '/login': (BuildContext context) => LoginPage(),
         // TODO: Change to a Backdrop with a HomePage frontLayer (104)
-        '/': (BuildContext context) => AddGroupPage(),
+        '/': (BuildContext context) => const AddGroupPage(),
         '/login': (BuildContext context) => LoginPage(),
+        '/home': (BuildContext context) => const MyHomePage(),
+
 
 
         // TODO: Make currentCategory field take _currentCategory (104)

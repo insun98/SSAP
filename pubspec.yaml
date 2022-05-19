@@ -19,6 +19,9 @@ dependencies:
   firebase_storage: ^10.2.15
   firebase_database: ^9.0.13
   syncfusion_flutter_calendar: ^20.1.56
+  date_time_picker: ^2.1.0
+  flutter_animated_dialog: ^2.0.1
+  flutter_switch: ^0.3.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

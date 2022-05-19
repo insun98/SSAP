@@ -4,11 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
 import 'package:google_sign_in/google_sign_in.dart';
-
-
-
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({Key? key}) : super(key: key);
@@ -25,7 +21,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
     // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth =
-    await googleUser?.authentication;
+        await googleUser?.authentication;
 
     // Create a new credential
     final credential = GoogleAuthProvider.credential(
@@ -49,171 +45,168 @@ class _LoginWidgetState extends State<LoginWidget> {
     return Scaffold(
       body: isloading
           ? const Center(
-        child: CircularProgressIndicator(),
-      )
+              child: CircularProgressIndicator(),
+            )
           : Form(
-        key: formkey,
-        child: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.light,
-          child: Stack(
-            children: [
-              Container(
-                height: double.infinity,
-                width: double.infinity,
-                color: Colors.white,
-                child: SingleChildScrollView(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 30, vertical: 70),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "Sign In",
-                        style: TextStyle(
-                            fontFamily: 'Yrsa',
-                            fontSize: 25,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 30),
-                      TextFormField(
-
-                        keyboardType: TextInputType.emailAddress,
-                        onChanged: (value) {
-                          email = value;
-                        },
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Please enter Email";
-                          }
-                          return null;
-                        },
-                        textAlign: TextAlign.left,
-                        decoration: const InputDecoration(
-                            hintText: 'Email'
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        obscureText: true,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Please enter Password";
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          password = value;
-                        },
-                        textAlign: TextAlign.left,
-                        decoration: const InputDecoration(
-                            hintText: 'Password'
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        child: const Text('Confirm'),
-                        style: ElevatedButton.styleFrom(
-                          primary: const Color(0xFFB9C98C), // set the background color
-
-                          minimumSize: const Size(300,35),
-                        ),
-
-                        onPressed: () async {
-                          if (formkey.currentState!.validate()) {
-                            setState(() {
-                              isloading = true;
-                            });
-                            try {
-                              await _auth.signInWithEmailAndPassword(
-                                  email: email, password: password);
-
-                              await Navigator.pushNamed(context, '/home');
-
-
-                              setState(() {
-                                isloading = false;
-                              });
-                            } on FirebaseAuthException catch (e) {
-                              showDialog(
-                                context: context,
-                                builder: (ctx) => AlertDialog(
-                                  title: const Text("Login Failed"),
-                                  content: Text('${e.message}'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(ctx).pop();
-                                      },
-                                      child: const Text('Okay'),
-                                    )
-                                  ],
-                                ),
-                              );
-                              print(e);
-                            }
-                            setState(() {
-                              isloading = false;
-                            });
-                          }
-                        },
-                      ),
-                      const SizedBox(height: 30),
-                      GestureDetector(
-                        onTap: () {
-                          // Navigator.of(context).push(
-                          //   MaterialPageRoute(
-                          //     builder: (context) => SignupScreen(),
-                          //   ),
-                          // );
-                        },
-                        child: Row(
+              key: formkey,
+              child: AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle.light,
+                child: Stack(
+                  children: [
+                    Container(
+                      height: double.infinity,
+                      width: double.infinity,
+                      color: Colors.white,
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 70),
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text(
-                              "Don't have an Account ?",
+                          children: [
+                            const Text(
+                              "Sign In",
                               style: TextStyle(
-                                  fontSize: 15, color: Colors.black87),
+                                  fontFamily: 'Yrsa',
+                                  fontSize: 25,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
                             ),
-                            SizedBox(width: 10),
-                            Hero(
-                              tag: '1',
-                              child: Text(
-                                'Sign up',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
+                            const SizedBox(height: 30),
+                            TextFormField(
+                              keyboardType: TextInputType.emailAddress,
+                              onChanged: (value) {
+                                email = value;
+                              },
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Please enter Email";
+                                }
+                                return null;
+                              },
+                              textAlign: TextAlign.left,
+                              decoration:
+                                  const InputDecoration(hintText: 'Email'),
+                            ),
+                            const SizedBox(height: 10),
+                            TextFormField(
+                              obscureText: true,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Please enter Password";
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                password = value;
+                              },
+                              textAlign: TextAlign.left,
+                              decoration:
+                                  const InputDecoration(hintText: 'Password'),
+                            ),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                              child: const Text('Confirm'),
+                              style: ElevatedButton.styleFrom(
+                                primary: const Color(
+                                    0xFFB9C98C), // set the background color
+
+                                minimumSize: const Size(300, 35),
                               ),
-                            )
+                              onPressed: () async {
+                                if (formkey.currentState!.validate()) {
+                                  setState(() {
+                                    isloading = true;
+                                  });
+                                  try {
+                                    await _auth.signInWithEmailAndPassword(
+                                        email: email, password: password);
+
+                                    await Navigator.pushNamed(context, '/home');
+
+                                    setState(() {
+                                      isloading = false;
+                                    });
+                                  } on FirebaseAuthException catch (e) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (ctx) => AlertDialog(
+                                        title: const Text("Login Failed"),
+                                        content: Text('${e.message}'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(ctx).pop();
+                                            },
+                                            child: const Text('Okay'),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                    print(e);
+                                  }
+                                  setState(() {
+                                    isloading = false;
+                                  });
+                                }
+                              },
+                            ),
+                            const SizedBox(height: 30),
+                            GestureDetector(
+                              onTap: () {
+                                // Navigator.of(context).push(
+                                //   MaterialPageRoute(
+                                //     builder: (context) => SignupScreen(),
+                                //   ),
+                                // );
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children:  [
+                                  Text(
+                                    "Don't have an Account ?",
+                                    style: TextStyle(
+                                        fontSize: 15, color: Colors.black87),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Hero(
+                                    tag: '1',
+                                    child: TextButton(
+                                      child: Text(
+                                        'Sign up',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, '/signup');
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                    style: TextButton.styleFrom(
+                                      primary: Colors.red,
+                                      //primary: Colors.red.withOpacity(0.3),
+                                    ),
+                                    onPressed:
+                                        signInWithGoogle, //버튼을 누르면 구글 signin 실행
+                                    child: const Text("Google Login"),
+                                  ),
+                                ]),
                           ],
                         ),
                       ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children:[
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                primary: Colors.red,
-                                //primary: Colors.red.withOpacity(0.3),
-                              ),
-                              onPressed:
-                              signInWithGoogle, //버튼을 누르면 구글 signin 실행
-                              child: const Text("Google Login"),
-                            ),
-                          ]
-
-                      ),
-
-
-                    ],
-                  ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
-        ),
-      ),
+              ),
+            ),
     );
   }
 }

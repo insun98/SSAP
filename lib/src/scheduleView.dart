@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
+import 'package:shrine/src/friendlisttest.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 //import 'package:ntp/ntp.dart';
 import '../Provider/scheduleProvider.dart';
@@ -17,7 +18,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool status = false;
+  bool status = true;
   bool month = false;
   final List<Meeting> meetings = ScheduleProvider().getSchedules;
   final _formKey = GlobalKey<FormState>();
@@ -25,6 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    //status = Provider.of<ScheduleProvider>(context).private;
     return Scaffold(
       backgroundColor: Colors.white,
       drawerScrimColor: Colors.black,
@@ -128,7 +130,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Colors.black,
               ),
               title: const Text('My Friend List'),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/friendlist');
+              },
             ),
             const Divider(),
             ListTile(
@@ -150,11 +154,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: const EdgeInsets.only(right: 16),
                 child: FlutterSwitch(
                   onToggle: (val) {
-                    setState(() {
-                      status = !status;
-                    });
+                    context.read<ScheduleProvider>().changePrivate(val);
                   },
-                  value: status,
+                  value: context.watch<ScheduleProvider>().private,//status,
                   width: 40.0,
                   height: 20.0,
                   valueFontSize: 10.0,

@@ -70,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
               )),
           IconButton(
               onPressed: () {
+                Navigator.pushNamed(context, '/addFriend');
                 setState(() {
                   month = true;
                   if (kDebugMode) {
@@ -82,7 +83,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Color(0xFFB9C98C),
               )),
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/addGroup');
+              },
               icon: const Icon(
                 Icons.person_add_alt_1,
                 color: Color(0xFFB9C98C),
@@ -120,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 'Group List',
                 style: TextStyle(color: Color(0xFFB9C98C)),
               ),
-              onTap: () {},
+              onTap: () {Navigator.pushNamed(context, '/groupList');},
             ),
             ListTile(
               leading: const Icon(

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
+import 'package:shrine/src/Friend.dart';
 import 'package:shrine/src/addGroup.dart';
 
 
@@ -39,7 +40,9 @@ class ShrineApp extends StatelessWidget {
         '/login': (BuildContext context) => const LoginWidget(),
         '/home': (BuildContext context) => const MyHomePage(),
         '/signup': (BuildContext context) => const SignupPage(),
-
+        '/groupList': (BuildContext context) => const GroupList(),
+        '/addgroupSchedule': (BuildContext context) => const AddGroupSchedule(),
+        '/addFriend': (BuildContext context) => const AddFriend(),
 
 
         // TODO: Make currentCategory field take _currentCategory (104)

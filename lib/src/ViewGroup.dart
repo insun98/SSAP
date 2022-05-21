@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 
 import '../Provider/GroupProvider.dart';
@@ -12,10 +13,13 @@ class ViewGroup extends StatefulWidget {
 }
 
 class _ViewGroupState extends State<ViewGroup> {
+  bool status = false;
+
   @override
   Widget build(BuildContext context) {
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
     return Scaffold(
+      drawerScrimColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         bottomOpacity: 0.0,
@@ -29,7 +33,7 @@ class _ViewGroupState extends State<ViewGroup> {
             Icons.menu,
             color: Colors.grey,
           ),
-          onPressed: () {},
+          onPressed: () {Scaffold.of(context).openDrawer();},
         ),
         actions: <Widget>[
           IconButton(
@@ -44,7 +48,7 @@ class _ViewGroupState extends State<ViewGroup> {
               Icons.post_add_sharp,
               color: Color(0xffB9C98C),
             ),
-            onPressed: () {},
+            onPressed: () {Navigator.pushNamed(context, '/addgroupSchedule');},
           ),
           IconButton(
             icon: const Icon(
@@ -54,6 +58,89 @@ class _ViewGroupState extends State<ViewGroup> {
             onPressed: () {},
           ),
         ],
+      ),
+      drawer: Drawer(
+        backgroundColor: Colors.white,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const Padding(
+              child: Text(
+                'SSAP calendar',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              ),
+              padding: EdgeInsets.only(top: 40, left: 10),
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(
+                Icons.account_circle,
+                color: Colors.black,
+              ),
+              title: const Text('Yoo Isae'),
+              onTap: () {},
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(
+                Icons.people,
+                color: Color(0xFFB9C98C),
+              ),
+              title: const Text(
+                'Group List',
+                style: TextStyle(color: Color(0xFFB9C98C)),
+              ),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.people,
+                color: Colors.black,
+              ),
+              title: const Text('My Friend List'),
+              onTap: () {},
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(
+                Icons.settings,
+                color: Color(0xFFB9C98C),
+              ),
+              title: const Text('Settings'),
+              onTap: () {},
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Container(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: const Text(
+                    'Pubic/Private View',
+                    style: TextStyle(),
+                  )),
+              Container(
+                padding: const EdgeInsets.only(right: 16),
+                child: FlutterSwitch(
+                  onToggle: (val) {
+                    setState(() {
+                      status = !status;
+                    });
+                  },
+                  value: status,
+                  width: 40.0,
+                  height: 20.0,
+                  valueFontSize: 10.0,
+                  toggleSize: 15.0,
+                  borderRadius: 30.0,
+                  toggleColor: Colors.white,
+                  activeColor: const Color(0xFFB9C98C),
+                ),
+              ),
+            ]),
+            ListTile(
+              title: const Text('Sign out'),
+              onTap: () {},
+            ),
+          ],
+        ),
       ),
       body: SafeArea(
         child: Center(

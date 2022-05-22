@@ -10,9 +10,7 @@ import 'package:flutter/cupertino.dart';
 import '../firebase_options.dart';
 import '../src/addGroup.dart';
 
-
 class GroupProvider extends ChangeNotifier {
-
   String _defaultImage = "";
   String value = "ASC";
   int userIndex = 0;
@@ -26,12 +24,11 @@ class GroupProvider extends ChangeNotifier {
   }
   StreamSubscription<DocumentSnapshot>? _profileSubscription;
   StreamSubscription<QuerySnapshot>? _groupSubscription;
-  StreamSubscription<DocumentSnapshot>? _groupMemeberSubscription;
+  StreamSubscription<QuerySnapshot>? _groupMemeberSubscription;
   Future<void> init(String newValue) async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-
 
     final storageRef = FirebaseStorage.instance.ref();
     const filename = "defaultProfile.png";
@@ -40,98 +37,87 @@ class GroupProvider extends ChangeNotifier {
     _defaultImage = downloadUrl;
 
     FirebaseAuth.instance.userChanges().listen((user) {
-      _groupSubscription=FirebaseFirestore.instance
+      _groupSubscription = FirebaseFirestore.instance
           .collection('group')
           .snapshots()
           .listen((snapshot) {
-        _groups=[];
-        List<userInfo> Members=[];
-        for (final document in snapshot.docs) {
+        _groups = [];
 
+        for (final document in snapshot.docs) {
           _groups.add(
             groupInfo(
               groupName: document.data()['groupName'] as String,
-                docId:document.id,
-              members:Members,
-
-
+              docId: document.id,
             ),
           );
         }
         notifyListeners();
-
       });
-      List<userInfo> Members = [];
       for (final group in _groups) {
-      FirebaseFirestore.instance
-          .collection('group')
-          .doc(group.groupName)
-          .collection('Members')
-          .snapshots()
-          .listen((snapshot) {
-
-        for (final document in snapshot.docs){
-          Members.add(
-              userInfo(uid: document.id, name: document.data()['name'],Userid: document.data()['id'],photo:_defaultImage,
-
-              )
-          );
-          group.members = Members;
-        }
-        notifyListeners();
-      });
-
-    }
+        _groupMemeberSubscription = FirebaseFirestore.instance
+            .collection('group')
+            .doc(group.groupName)
+            .collection('Members')
+            .snapshots()
+            .listen((snapshot) {
+          for (final document in snapshot.docs) {
+            group.members.add(userInfo(
+              uid: document.id,
+              name: document.data()['name'],
+              Userid: document.data()['id'],
+              photo: _defaultImage,
+            ));
+            print(group.members.length);
+          }
+          notifyListeners();
+        });
+      }
     });
   }
 
-  List<userInfo> searchUser (String userId){
+  List<userInfo> searchUser(String userId) {
     FirebaseFirestore.instance
         .collection('user')
-       .where('id', isGreaterThanOrEqualTo: userId)
+        .where('id', isGreaterThanOrEqualTo: userId)
         .snapshots()
         .listen((snapshot) {
-          _users=[];
-          for (final document in snapshot.docs) {
-            _users.add(
-              userInfo(
-                name: document.data()['name'] as String,
-                Userid: document.data()['id'] as String,
-                uid: document.id,
-                photo: "",
-              ),
-            );
-          }
-        notifyListeners();
-
-      });
+      _users = [];
+      for (final document in snapshot.docs) {
+        _users.add(
+          userInfo(
+            name: document.data()['name'] as String,
+            Userid: document.data()['id'] as String,
+            uid: document.id,
+            photo: "",
+          ),
+        );
+      }
+      notifyListeners();
+    });
     notifyListeners();
     return _users;
-
   }
-  Future<void> addGroup(List<userInfo> members, String groupName) async {
 
+  Future<void> addGroup(List<userInfo> members, String groupName) async {
+    FirebaseFirestore.instance
+        .collection('group')
+        .doc(groupName)
+        .set(<String, dynamic>{
+      'groupName': groupName,
+    });
+    for (var member in members) {
       FirebaseFirestore.instance
           .collection('group')
           .doc(groupName)
-          .set(<String, dynamic>{
-        'groupName': groupName,
-
+          .collection('Members')
+          .add(<String, dynamic>{
+        'name': member.name,
+        'uid': member.uid,
+        'id': member.Userid,
       });
-      for(var member in members) {
-        FirebaseFirestore.instance
-            .collection('group')
-            .doc(groupName)
-            .collection('Members')
-            .add(<String, dynamic>{
-          'name': member.name,
-          'uid':member.uid,
-          'id':member.Userid,
-        });
-
-      }
-      notifyListeners();
-}
+    }
+    notifyListeners();
+  }
 
   Future<DocumentReference> addItem(
       String URL, String name, int price, String description) {
@@ -148,8 +134,16 @@ class GroupProvider extends ChangeNotifier {
     });
   }
 
-  Future<void> delete(String docId) async {
-    FirebaseFirestore.instance.collection('product').doc(docId).delete();
+  Future<void> delete(String groupName) async {
+    var collection = FirebaseFirestore.instance
+        .collection('group')
+        .doc(groupName)
+        .collection('Members');
+    var snapshots = await collection.get();
+    for (var doc in snapshots.docs) {
+      await doc.reference.delete();
+    }
+    FirebaseFirestore.instance.collection('group').doc(groupName).delete();
   }
 
   Future<void> editItem(String docId, String URL, String name, int price,
@@ -177,23 +171,17 @@ class GroupProvider extends ChangeNotifier {
     final downloadUrl = await mountainsRef.getDownloadURL();
     return downloadUrl;
   }
-
 }
-class userInfo {
-  userInfo(
-      {required this.name,
-        required this.uid,
-        required this.Userid,
-        required this.photo,
 
-      });
+class userInfo {
+  userInfo({
+    required this.name,
+    required this.uid,
+    required this.Userid,
+    required this.photo,
+  });
   String name;
   String uid;
   String Userid;
   String photo;
-
-
 }
-
-
-

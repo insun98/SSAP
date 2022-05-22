@@ -39,9 +39,9 @@ class ShrineApp extends StatelessWidget {
         // '/login': (BuildContext context) => LoginPage(),
         // TODO: Change to a Backdrop with a HomePage frontLayer (104)
         '/addGroup': (BuildContext context) => const AddGroupPage(),
-        '/login': (BuildContext context) => const LoginWidget(),
+
         '/home': (BuildContext context) => const MyHomePage(),
-        '/signup': (BuildContext context) => const SignupPage(),
+
         '/groupList': (BuildContext context) => const GroupList(),
         '/addgroupSchedule': (BuildContext context) => const AddGroupSchedule(),
         '/addFriend': (BuildContext context) => const AddFriend(),

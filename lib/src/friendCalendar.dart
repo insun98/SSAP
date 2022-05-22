@@ -4,35 +4,34 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
-import 'package:shrine/src/friendlisttest.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 //import 'package:ntp/ntp.dart';
 import '../Provider/scheduleProvider.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class FriendCalendar extends StatefulWidget {
+  const FriendCalendar({Key? key,}) : super(key: key);
 
+  //final String friendID;
   @override
   // ignore: library_private_types_in_public_api
-  _MyHomePageState createState() => _MyHomePageState();
+  _FriendCalendarState createState() => _FriendCalendarState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _FriendCalendarState extends State<FriendCalendar> {
   bool status = true;
   bool month = false;
-  final List<Meeting> meetings = ScheduleProvider().getSchedules;
-  final _formKey = GlobalKey<FormState>();
+  List<Meeting> meetings = ScheduleProvider().getSchedules;
   final CalendarController _controller = CalendarController();
 
   @override
   Widget build(BuildContext context) {
-    //status = Provider.of<ScheduleProvider>(context).private;
+    meetings = context.watch<ScheduleProvider>().friendSchedules;
     return Scaffold(
       backgroundColor: Colors.white,
       drawerScrimColor: Colors.black,
       appBar: AppBar(
-        title: const Text(
-          'calendar',
+        title: Text(
+          context.watch<ScheduleProvider>().FriendName,
           style: TextStyle(color: Colors.black),
         ),
         //centerTitle: true,
@@ -49,12 +48,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         actions: [
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.notifications,
-                color: Color(0xFFB9C98C),
-              )),
           IconButton(
               onPressed: () {
                 setState(() {
@@ -81,12 +74,6 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               icon: const Icon(
                 Icons.search,
-                color: Color(0xFFB9C98C),
-              )),
-          IconButton(
-              onPressed: () {Navigator.pushNamed(context, '/addGroup');},
-              icon: const Icon(
-                Icons.person_add_alt_1,
                 color: Color(0xFFB9C98C),
               )),
         ],
@@ -130,9 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Colors.black,
               ),
               title: const Text('My Friend List'),
-              onTap: () {
-                Navigator.pushNamed(context, '/friendlist');
-              },
+              onTap: () {},
             ),
             const Divider(),
             ListTile(
@@ -181,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
           initialSelectedDate: DateTime.now(),
           initialDisplayDate: DateTime.now(),
           showDatePickerButton: true,
-          dataSource: MeetingDataSource(state.getSchedules),
+          dataSource: MeetingDataSource(meetings),
           monthViewSettings: const MonthViewSettings(
               appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
               showAgenda: true),
@@ -222,9 +207,8 @@ class _MyHomePageState extends State<MyHomePage> {
           //showWeekNumber: true,
           onTap: (value) {
             // print(value.appointments!.first);
-
+            Meeting sch = value.appointments?.first;
             if(value.appointments!.first != null && value.targetElement.toString() != 'CalendarElement.calendarCell'){
-              Meeting sch = value.appointments?.first;
               showGeneralDialog(
                 barrierLabel: "Label",
                 barrierDismissible: true,
@@ -247,195 +231,6 @@ class _MyHomePageState extends State<MyHomePage> {
           //allowViewNavigation: true,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showGeneralDialog(
-            barrierLabel: "Label",
-            barrierDismissible: true,
-            barrierColor: Colors.black.withOpacity(0.5),
-            transitionDuration: const Duration(milliseconds: 300),
-            context: context,
-            pageBuilder: (context, anim1, anim2) {
-              return const AddSchedule();
-            },
-            transitionBuilder: (context, anim1, anim2, child) {
-              return SlideTransition(
-                position: Tween(begin: const Offset(0, 1), end: const Offset(0, 0))
-                    .animate(anim1),
-                child: child,
-              );
-            },
-          );
-        },
-        child: const Icon(
-          Icons.add,
-          size: 50,
-        ),
-        backgroundColor: const Color(0xFFB9C98C),
-      ),
-    );
-  }
-}
-
-class AddSchedule extends StatefulWidget {
-  const AddSchedule({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<AddSchedule> createState() => _AddScheduleState();
-}
-
-class _AddScheduleState extends State<AddSchedule> {
-  final List<String> _type = ['Personal', 'Group'];
-  String _curType = 'Personal';
-  DateTime startTime = DateTime.parse(DateTime.now().toString());
-  DateTime endTime =
-      DateTime.parse(DateTime.now().add(const Duration(hours: 2)).toString());
-  final TextEditingController _controller1 = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        shadowColor: Colors.white,
-        elevation: 0.0,
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              Icons.clear,
-              color: Colors.black,
-            )),
-        actions: [
-          TextButton(
-            onPressed: () {
-              context
-                  .read<ScheduleProvider>()
-                  .addSchedule(_controller1.text, startTime, endTime, _curType);
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('Add schedule'),
-              ));
-            },
-            child: const Text(
-              'add',
-              style: TextStyle(
-                color: Color(0xFFB9C98C),
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: Container(
-        //width: MediaQuery.of(context).size.width - 10,
-        //height: MediaQuery.of(context).size.height - 80,
-        //padding: const EdgeInsets.all(20),
-        color: Colors.white,
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            DropdownButton(
-              items: _type.map((value) {
-                return DropdownMenuItem(
-                    value: value,
-                    child: Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Text(
-                          value,
-                        )));
-              }).toList(),
-              value: _curType,
-              onChanged: (value) {
-                setState(() {
-                  _curType = value.toString();
-                });
-              },
-              isExpanded: true,
-            ),
-            TextFormField(
-              controller: _controller1,
-              decoration: const InputDecoration(
-                  labelText: 'title',
-                  hintText: 'Enter title',
-                  contentPadding: EdgeInsets.only(left: 20)),
-            ),
-            DateTimePicker(
-                //textAlign: TextAlign.center,
-                type: DateTimePickerType.dateTimeSeparate,
-                dateMask: 'd MMM, yyyy',
-                //controller: _controller1,
-                initialValue: startTime.toString(),
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2100),
-                icon: const Icon(Icons.event),
-                dateLabelText: 'Start Date',
-                timeLabelText: "Start Time",
-                //use24HourFormat: false,
-                //locale: Locale('pt', 'BR'),
-                // selectableDayPredicate: (date) {
-                //   if (date.weekday == 6 || date.weekday == 7) {
-                //     return false;
-                //   }
-                //   return true;
-                // },
-                onChanged: (val) => setState(() {
-                      startTime = DateTime.parse(val);
-                      print(startTime);
-                    }),
-                validator: (val) {
-                  //setState(() => _valueToValidate1 = val ?? '');
-                  return null;
-                },
-                onSaved: (val) {} //setState(() => _valueSaved1 = val ?? ''),
-                ),
-            DateTimePicker(
-                enableInteractiveSelection: true,
-                type: DateTimePickerType.dateTimeSeparate,
-                dateMask: 'd MMM, yyyy',
-                //controller: _controller2,
-                initialValue: endTime.toString(),
-                //_controller2.text,
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2100),
-                icon: const Icon(Icons.event),
-                dateLabelText: 'End Date',
-                timeLabelText: "End Time",
-                //use24HourFormat: false,
-                //locale: Locale('pt', 'BR'),
-                // selectableDayPredicate: (date) {
-                //   if (date.weekday == 6 || date.weekday == 7) {
-                //     return false;
-                //   }
-                //   return true;
-                // },
-                onChanged: (val) => setState(() {
-                      //_valueChanged2 = val;
-                      endTime = DateTime.parse(val);
-
-                      // if(endTime.isBefore(startTime)){
-                      //   print('hi');
-                      //   _controller2.clear();
-                      //   //_controller2.text = _controller1.text;
-                      // }
-                      // else{
-                      //   _controller2 = TextEditingController(text: val);
-                      //   endTime = DateTime.parse(val);
-                      // }
-                    }),
-                validator: (val) {
-                  //setState(() => _valueToValidate2 = val ?? '');
-                  return null;
-                },
-                onSaved: (val) {} //=> setState(() => _valueSaved2 = val ?? ''),
-                ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -450,19 +245,18 @@ class DetailSchedule extends StatefulWidget {
 }
 
 class _DetailScheduleState extends State<DetailSchedule> {
-  final List<String> _type = ['Personal', 'Group'];
+  final List<String> _type = ['type1', 'type2', 'type3'];
 
-  String _curType = 'Personal';
+  String _curType = 'type1';
   late DateTime startTime;
   late DateTime endTime;
 
   @override
   Widget build(BuildContext context) {
-    _curType = widget.schedule.type;
     startTime = widget.schedule.from;
     endTime = widget.schedule.to;
     TextEditingController _controller1 =
-        TextEditingController(text: widget.schedule.eventName);
+    TextEditingController(text: widget.schedule.eventName);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -547,7 +341,7 @@ class _DetailScheduleState extends State<DetailSchedule> {
                   contentPadding: EdgeInsets.only(left: 20)),
             ),
             DateTimePicker(
-                //textAlign: TextAlign.center,
+              //textAlign: TextAlign.center,
                 type: DateTimePickerType.dateTimeSeparate,
                 dateMask: 'd MMM, yyyy',
                 //controller: _controller1,
@@ -566,15 +360,15 @@ class _DetailScheduleState extends State<DetailSchedule> {
                 //   return true;
                 // },
                 onChanged: (val) => setState(() {
-                      startTime = DateTime.parse(val);
-                      print(startTime);
-                    }),
+                  startTime = DateTime.parse(val);
+                  print(startTime);
+                }),
                 validator: (val) {
                   //setState(() => _valueToValidate1 = val ?? '');
                   return null;
                 },
                 onSaved: (val) {} //setState(() => _valueSaved1 = val ?? ''),
-                ),
+            ),
             DateTimePicker(
                 enableInteractiveSelection: true,
                 type: DateTimePickerType.dateTimeSeparate,
@@ -596,25 +390,25 @@ class _DetailScheduleState extends State<DetailSchedule> {
                 //   return true;
                 // },
                 onChanged: (val) => setState(() {
-                      //_valueChanged2 = val;
-                      endTime = DateTime.parse(val);
+                  //_valueChanged2 = val;
+                  endTime = DateTime.parse(val);
 
-                      // if(endTime.isBefore(startTime)){
-                      //   print('hi');
-                      //   _controller2.clear();
-                      //   //_controller2.text = _controller1.text;
-                      // }
-                      // else{
-                      //   _controller2 = TextEditingController(text: val);
-                      //   endTime = DateTime.parse(val);
-                      // }
-                    }),
+                  // if(endTime.isBefore(startTime)){
+                  //   print('hi');
+                  //   _controller2.clear();
+                  //   //_controller2.text = _controller1.text;
+                  // }
+                  // else{
+                  //   _controller2 = TextEditingController(text: val);
+                  //   endTime = DateTime.parse(val);
+                  // }
+                }),
                 validator: (val) {
                   //setState(() => _valueToValidate2 = val ?? '');
                   return null;
                 },
                 onSaved: (val) {} //=> setState(() => _valueSaved2 = val ?? ''),
-                ),
+            ),
           ],
         ),
       ),

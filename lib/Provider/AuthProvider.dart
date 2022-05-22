@@ -12,9 +12,9 @@ import '../firebase_options.dart';
 class ApplicationState extends ChangeNotifier {
 
   // String _defaultImage='';
-  // ApplicationState() {
-  //   init();
-  // }
+  ApplicationState() {
+    init();
+  }
 
   // Future<void> init() async {
   //   await Firebase.initializeApp(
@@ -162,11 +162,11 @@ class ApplicationState extends ChangeNotifier {
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .set(<String, dynamic>{
           'image':"https://firebasestorage.googleapis.com/v0/b/yorijori-52f2a.appspot.com/o/defaultProfile.png?alt=media&token=127cd072-80b8-4b77-ab22-a50a0dfa5206",
-      'email': email,
-      'name': name,
+        'email': email,
+        'name': name,
       'id': displayName,
       'password': password,
-      'followers': "20",
+
       'uid': FirebaseAuth.instance.currentUser!.uid,
     });
 

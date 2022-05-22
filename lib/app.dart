@@ -14,6 +14,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:shrine/src/addGroup.dart';
+import 'package:shrine/src/friendCalendar.dart';
+import 'package:shrine/src/friendlisttest.dart';
 
 
 
@@ -39,6 +41,9 @@ class ShrineApp extends StatelessWidget {
         '/login': (BuildContext context) => const LoginWidget(),
         '/home': (BuildContext context) => const MyHomePage(),
         '/signup': (BuildContext context) => const SignupPage(),
+        '/friendlist' : (BuildContext context) => const FriendLIst(),
+        '/friendCalendar' : (BuildContext context) => const FriendCalendar(),
+
 
 
 

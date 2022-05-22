@@ -104,35 +104,13 @@ class GroupProvider extends ChangeNotifier {
         .doc(groupName)
         .set(<String, dynamic>{
       'groupName': groupName,
+      'member': members,
     });
-    for (var member in members) {
-      FirebaseFirestore.instance
-          .collection('group')
-          .doc(groupName)
-          .collection('Members')
-          .add(<String, dynamic>{
-        'name': member.name,
-        'uid': member.uid,
-        'id': member.Userid,
-      });
-    }
+
     notifyListeners();
   }
 
-  Future<DocumentReference> addItem(
-      String URL, String name, int price, String description) {
-    return FirebaseFirestore.instance
-        .collection('product')
-        .add(<String, dynamic>{
-      'image': URL,
-      'productName': name,
-      'price': price,
-      'description': description,
-      'create': FieldValue.serverTimestamp(),
-      'modify': FieldValue.serverTimestamp(),
-      'creator': FirebaseAuth.instance.currentUser!.uid,
-    });
-  }
+
 
   Future<void> delete(String groupName) async {
     var collection = FirebaseFirestore.instance

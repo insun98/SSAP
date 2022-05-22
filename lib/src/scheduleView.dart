@@ -222,8 +222,9 @@ class _MyHomePageState extends State<MyHomePage> {
           //showWeekNumber: true,
           onTap: (value) {
             // print(value.appointments!.first);
-            Meeting sch = value.appointments?.first;
+
             if(value.appointments!.first != null && value.targetElement.toString() != 'CalendarElement.calendarCell'){
+              Meeting sch = value.appointments?.first;
               showGeneralDialog(
                 barrierLabel: "Label",
                 barrierDismissible: true,
@@ -286,8 +287,8 @@ class AddSchedule extends StatefulWidget {
 }
 
 class _AddScheduleState extends State<AddSchedule> {
-  final List<String> _type = ['type1', 'type2', 'type3'];
-  String _curType = 'type1';
+  final List<String> _type = ['Personal', 'Group'];
+  String _curType = 'Personal';
   DateTime startTime = DateTime.parse(DateTime.now().toString());
   DateTime endTime =
       DateTime.parse(DateTime.now().add(const Duration(hours: 2)).toString());
@@ -313,7 +314,7 @@ class _AddScheduleState extends State<AddSchedule> {
             onPressed: () {
               context
                   .read<ScheduleProvider>()
-                  .addSchedule(_controller1.text, startTime, endTime, null);
+                  .addSchedule(_controller1.text, startTime, endTime, _curType);
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text('Add schedule'),
@@ -449,14 +450,15 @@ class DetailSchedule extends StatefulWidget {
 }
 
 class _DetailScheduleState extends State<DetailSchedule> {
-  final List<String> _type = ['type1', 'type2', 'type3'];
+  final List<String> _type = ['Personal', 'Group'];
 
-  String _curType = 'type1';
+  String _curType = 'Personal';
   late DateTime startTime;
   late DateTime endTime;
 
   @override
   Widget build(BuildContext context) {
+    _curType = widget.schedule.type;
     startTime = widget.schedule.from;
     endTime = widget.schedule.to;
     TextEditingController _controller1 =

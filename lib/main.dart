@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 
+import 'Provider/FriendProvider.dart';
 import 'Provider/GroupProvider.dart';
 
 
@@ -39,6 +40,8 @@ class Myapp extends StatelessWidget {
             create: (_) => GroupProvider()),
         ChangeNotifierProvider<ScheduleProvider>(
             create: (_) => ScheduleProvider()),
+        ChangeNotifierProvider<FriendProvider>(
+            create: (_) => FriendProvider()),
 
       ],
       child: const ShrineApp(),

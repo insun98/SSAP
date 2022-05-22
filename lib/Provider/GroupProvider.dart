@@ -10,178 +10,115 @@ import 'package:flutter/cupertino.dart';
 import '../firebase_options.dart';
 import '../src/addGroup.dart';
 
-
 class GroupProvider extends ChangeNotifier {
-  bool order = true;
   String _defaultImage = "";
   String value = "ASC";
   int userIndex = 0;
+  List<userInfo> _users = [];
+  List<userInfo> get user => _users;
+
+  List<groupInfo> _groups = [];
+  List<groupInfo> get groups => _groups;
   GroupProvider() {
     init(value);
   }
   StreamSubscription<DocumentSnapshot>? _profileSubscription;
   StreamSubscription<QuerySnapshot>? _groupSubscription;
-  StreamSubscription<DocumentSnapshot>? _searchUserSubscription;
+  StreamSubscription<QuerySnapshot>? _groupMemeberSubscription;
   Future<void> init(String newValue) async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-
     final storageRef = FirebaseStorage.instance.ref();
-    const filename = "defaultimage.png";
+    const filename = "defaultProfile.png";
     final mountainsRef = storageRef.child(filename);
-    value = newValue;
-    if (value == "ASC") {
-      order = false;
-    } else {
-      order = true;
-    }
-
     final downloadUrl = await mountainsRef.getDownloadURL();
     _defaultImage = downloadUrl;
 
     FirebaseAuth.instance.userChanges().listen((user) {
-      // _profileSubscription = FirebaseFirestore.instance
-      //     .collection('user')
-      //     .doc(FirebaseAuth.instance.currentUser!.uid)
-      //     .snapshots()
-      //     .listen((snapshot) {
-      //   if (snapshot.data() != null) {
-      //     _profile.name = snapshot.data()!['name'];
-      //     _profile.id = snapshot.data()!['email'];
-      //     _profile.state_message = snapshot.data()!['state_message'];
-      //     _profile.photo = snapshot.data()!['image'];
-      //     _profile.uid = snapshot.data()!['name'];
-      //     notifyListeners();
-      //   }
-      // });
-
       _groupSubscription = FirebaseFirestore.instance
-          .collection('user')
+          .collection('group')
           .snapshots()
           .listen((snapshot) {
-        _users = [];
+        _groups = [];
+
         for (final document in snapshot.docs) {
-          _users.add(
-            User(
-              uid: document.id,
-              name: document.data()['name'] as String,
-              Userid: document.data()['id'] as String,
-              index: ++userIndex,
+          _groups.add(
+            groupInfo(
+              groupName: document.data()['groupName'] as String,
+              docId: document.id,
             ),
           );
-          print(document.data()['name'] as String);
         }
         notifyListeners();
       });
-      if (order == true) {
-        order = false;
-      } else {
-        order = true;
+      for (final group in _groups) {
+        _groupMemeberSubscription = FirebaseFirestore.instance
+            .collection('group')
+            .doc(group.groupName)
+            .collection('Members')
+            .snapshots()
+            .listen((snapshot) {
+          for (final document in snapshot.docs) {
+            group.members.add(userInfo(
+              uid: document.id,
+              name: document.data()['name'],
+              Userid: document.data()['id'],
+              photo: _defaultImage,
+            ));
+            print(group.members.length);
+          }
+          notifyListeners();
+        });
       }
     });
   }
 
-  String get defaultimage => _defaultImage;
-
-  List<User> _users = [];
-  List<User> get user => _users;
-  // Profile _profile = Profile(
-  //     name: '',
-  //     photo: '',
-  //     email: '',
-  //     state_message: 'I promise to take the test honestly before God',
-  //     uid: ' ');
-  // Profile get profile => _profile;
-
-  Editing _editstate = Editing.no;
-  Editing get editstate => _editstate;
-
-  Like _like = Like.unlike;
-
-  int _likenumber = 0;
-  final int _userExist = 0;
-  int get attendees => _likenumber;
-
-  Like checkLike(String docId) {
-    final userDoc = FirebaseFirestore.instance
-        .collection('product')
-        .doc(docId)
-        .collection('Like')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .snapshots()
-        .listen((snapshot) {
-      if (snapshot.data() != null) {
-        if (snapshot.data()!['like'] as bool) {
-          _like = Like.like;
-        } else {
-          _like = Like.unlike;
-        }
-      } else {
-        _like = Like.unlike;
-      }
-    });
-    return _like;
-  }
-
-  int countLikes(String docId) {
-    FirebaseFirestore.instance
-        .collection('product')
-        .doc(docId)
-        .collection('Like')
-        .where('like', isEqualTo: true)
-        .snapshots()
-        .listen((snapshot) {
-      _likenumber = snapshot.docs.length;
-      notifyListeners();
-    });
-    return _likenumber;
-  }
-
-  User? searchUser (String userId){
-    User user =User(Userid:"", name:"", index: 0,uid:"");
+  List<userInfo> searchUser(String userId) {
     FirebaseFirestore.instance
         .collection('user')
-       .where('id', isGreaterThanOrEqualTo: userId)
+        .where('id', isGreaterThanOrEqualTo: userId)
         .snapshots()
         .listen((snapshot) {
-      if (snapshot.docs.isNotEmpty ) {
-        user.name = snapshot.docs[0].data()['name'];
-        user.Userid = snapshot.docs[0].data()['id'];
-
-
-        notifyListeners();
-
-      }else {
-        return;
+      _users = [];
+      for (final document in snapshot.docs) {
+        _users.add(
+          userInfo(
+            name: document.data()['name'] as String,
+            Userid: document.data()['id'] as String,
+            uid: document.id,
+            photo: "",
+          ),
+        );
       }
+      notifyListeners();
     });
-    return user;
-
+    notifyListeners();
+    return _users;
   }
-  Future<void> addGroup(List<User> members, String groupName) async {
 
+  Future<void> addGroup(List<userInfo> members, String groupName) async {
+    FirebaseFirestore.instance
+        .collection('group')
+        .doc(groupName)
+        .set(<String, dynamic>{
+      'groupName': groupName,
+    });
+    for (var member in members) {
       FirebaseFirestore.instance
           .collection('group')
           .doc(groupName)
-          .set(<String, dynamic>{
-        'groupName': groupName,
+          .collection('Members')
+          .add(<String, dynamic>{
+        'name': member.name,
+        'uid': member.uid,
+        'id': member.Userid,
       });
-      for(var member in members) {
-        FirebaseFirestore.instance
-            .collection('group')
-            .doc(groupName)
-            .collection('Members')
-            .add(<String, dynamic>{
-          'name': member.name,
-          'uid':member.uid,
-          'id':member.Userid,
-        });
+    }
+    notifyListeners();
+  }
 
-      }
-}
-  makeGroup makingState = makeGroup.selectMember;
   Future<DocumentReference> addItem(
       String URL, String name, int price, String description) {
     return FirebaseFirestore.instance
@@ -197,8 +134,16 @@ class GroupProvider extends ChangeNotifier {
     });
   }
 
-  Future<void> delete(String docId) async {
-    FirebaseFirestore.instance.collection('product').doc(docId).delete();
+  Future<void> delete(String groupName) async {
+    var collection = FirebaseFirestore.instance
+        .collection('group')
+        .doc(groupName)
+        .collection('Members');
+    var snapshots = await collection.get();
+    for (var doc in snapshots.docs) {
+      await doc.reference.delete();
+    }
+    FirebaseFirestore.instance.collection('group').doc(groupName).delete();
   }
 
   Future<void> editItem(String docId, String URL, String name, int price,
@@ -226,76 +171,17 @@ class GroupProvider extends ChangeNotifier {
     final downloadUrl = await mountainsRef.getDownloadURL();
     return downloadUrl;
   }
-
-  Future<void> like(String docId) async {
-    CollectionReference product =
-        FirebaseFirestore.instance.collection('product');
-
-    product
-        .doc(docId)
-        .collection('Like')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .set(<String, dynamic>{'like': true});
-  }
-
-  // myPost checkPost(String creator) {
-  //   if (creator == FirebaseAuth.instance.currentUser!.uid) {
-  //     return myPost.yes;
-  //   } else {
-  //     return myPost.no;
-  //   }
-  // }
-
-  void edit() {
-    _editstate = Editing.yes;
-    notifyListeners();
-  }
-
-  Future<void> save(String stateMessage) async {
-    _editstate = Editing.no;
-    FirebaseFirestore.instance
-        .collection('user')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .update(<String, dynamic>{'state_message': stateMessage});
-    notifyListeners();
-  }
 }
 
-class Group {
-  Group(
-      {required this.docId,
-      required this.image,
-      required this.productName,
-      required this.price,
-      required this.description,
-      required this.create,
-      required this.modify,
-      required this.creator});
-  String docId;
-  String image;
-  String productName;
-  int price;
-  String description;
-  Timestamp create;
-  Timestamp modify;
-  String creator;
-}
-
-class User {
-  User(
-      {required this.name,
-      required this.uid,
-        required this.Userid,
-        required this.index,
-
-      });
+class userInfo {
+  userInfo({
+    required this.name,
+    required this.uid,
+    required this.Userid,
+    required this.photo,
+  });
   String name;
   String uid;
   String Userid;
-  int index;
-
+  String photo;
 }
-
-enum Like { like, unlike }
-
-enum Editing { yes, no }

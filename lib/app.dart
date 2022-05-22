@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
+import 'package:shrine/src/Friend.dart';
 import 'package:shrine/src/addGroup.dart';
 import 'package:shrine/src/friendCalendar.dart';
 import 'package:shrine/src/friendlisttest.dart';
@@ -38,13 +39,14 @@ class ShrineApp extends StatelessWidget {
         // '/login': (BuildContext context) => LoginPage(),
         // TODO: Change to a Backdrop with a HomePage frontLayer (104)
         '/addGroup': (BuildContext context) => const AddGroupPage(),
-        '/login': (BuildContext context) => const LoginWidget(),
+
         '/home': (BuildContext context) => const MyHomePage(),
-        '/signup': (BuildContext context) => const SignupPage(),
+
+        '/groupList': (BuildContext context) => const GroupList(),
+        '/addgroupSchedule': (BuildContext context) => const AddGroupSchedule(),
+        '/addFriend': (BuildContext context) => const AddFriend(),
         '/friendlist' : (BuildContext context) => const FriendLIst(),
         '/friendCalendar' : (BuildContext context) => const FriendCalendar(),
-
-
 
 
         // TODO: Make currentCategory field take _currentCategory (104)

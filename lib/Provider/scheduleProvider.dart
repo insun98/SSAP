@@ -94,6 +94,7 @@ class ScheduleProvider with ChangeNotifier {
       "schedule name": schedule.eventName,
       "schedule start": schedule.from,
       "schedule end": schedule.to,
+      "type" : schedule.type,
     });
     notifyListeners();
   }

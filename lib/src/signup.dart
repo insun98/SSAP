@@ -213,14 +213,14 @@ class _SignupPageState extends State<SignupPage> {
 
   Future<void> registerAccount(
       String email,
-      String displayName,
+      String id,
       String password,
       String name,
       void Function(FirebaseAuthException e) errorCallback) async {
     try {
       var credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      await credential.user!.updateDisplayName(displayName);
+      await credential.user!.updateDisplayName(id);
     } on FirebaseAuthException catch (e) {
       errorCallback(e);
     }
@@ -232,7 +232,7 @@ class _SignupPageState extends State<SignupPage> {
       "https://firebasestorage.googleapis.com/v0/b/yorijori-52f2a.appspot.com/o/defaultProfile.png?alt=media&token=127cd072-80b8-4b77-ab22-a50a0dfa5206",
       'email': email,
       'name': name,
-      'id': displayName,
+      'id': id,
       'password': password,
       'uid': FirebaseAuth.instance.currentUser!.uid,
     });

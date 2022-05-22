@@ -384,40 +384,39 @@ class _GroupListState extends State<GroupList> {
                       color: Colors.grey,
                     ),
                     SizedBox(
-                      height: 50,
-                      child: ListView.separated(
+                        height:500,
+                        child: ListView.separated(
                           padding: const EdgeInsets.all(8),
                           itemCount: group.groups.length,
                           itemBuilder: (BuildContext context, int index) {
-                            final item = group.groups[index].groupName;
-                            return Dismissible(
-                              key: UniqueKey(),
-                              onDismissed: (direction) {
-                                groupProvider.delete(group.groups[index].groupName);
-                              },
-                              child: Container(
-                                height: 40,
-                                child: Center(
-                                  child: TextButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => ViewGroup(group: group.groups[index])));
-                                    },
-                                    child: Text(
-                                      "${group.groups[index].groupName}    (${group.groups[index].members.length})",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  ),
+                            return Dismissible(key: UniqueKey(), child: SizedBox(
+                              height: 50,
+                              child: Row(children:[TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ViewGroup(group: group.groups[index])));
+                                },
+                                child: Text(
+                                  "${group.groups[index].groupName}    (${group.groups[index].members.length})",
+                                  style: TextStyle(color: Colors.black),
                                 ),
                               ),
+
+
+
+                              ],
+
+                              ),
+                            ),
                             );
                           },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return Divider();
-                          }),
-                    ),
+                          separatorBuilder:
+                              (BuildContext context, int index) {
+                            return const Divider(color: Colors.grey,);
+                          },
+                        )),
                   ],
                 ),
               ),
@@ -464,23 +463,7 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
               color: Colors.black,
             )),
         actions: [
-          // TextButton(
-          //   onPressed: () {
-          //     context
-          //         .read<ScheduleProvider>()
-          //         .addSchedule(_controller1.text, startTime, endTime, null);
-          //     Navigator.pop(context);
-          //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          //       content: Text('Add schedule'),
-          //     ));
-          //   },
-          //   child: const Text(
-          //     'add',
-          //     style: TextStyle(
-          //       color: Color(0xFFB9C98C),
-          //     ),
-          //   ),
-          // ),
+
         ],
       ),
       body: Container(

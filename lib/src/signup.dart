@@ -16,6 +16,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:provider/provider.dart';
 
@@ -233,8 +234,8 @@ class _SignupPageState extends State<SignupPage> {
       'name': name,
       'id': displayName,
       'password': password,
-      'followers': "20",
       'uid': FirebaseAuth.instance.currentUser!.uid,
     });
+
   }
 }

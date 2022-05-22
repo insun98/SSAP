@@ -1,5 +1,6 @@
 //로그인 페이지
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,23 +16,7 @@ class LoginWidget extends StatefulWidget {
 
 class _LoginWidgetState extends State<LoginWidget> {
   //구글 로그인 프로세스
-  Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-    await googleUser?.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
 
   final formkey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
@@ -186,19 +171,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                           ],
                         ),
                       ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                primary: Colors.red,
-                                //primary: Colors.red.withOpacity(0.3),
-                              ),
-                              onPressed:
-                              signInWithGoogle, //버튼을 누르면 구글 signin 실행
-                              child: const Text("Google Login"),
-                            ),
-                          ]),
+
                     ],
                   ),
                 ),
@@ -209,6 +182,8 @@ class _LoginWidgetState extends State<LoginWidget> {
       ),
     );
   }
+
+
 }
 
 // class LoginWidget extends StatelessWidget {

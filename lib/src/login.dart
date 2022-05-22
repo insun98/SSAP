@@ -1,240 +1,269 @@
-// Copyright 2018-present the Flutter authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//import 'package:google_fonts/google_fonts.dart';
+//로그인 페이지
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:provider/provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-
-
-class SignupPage extends StatefulWidget {
-  const SignupPage({Key? key}) : super(key: key);
+class LoginWidget extends StatefulWidget {
+  const LoginWidget({Key? key}) : super(key: key);
 
   @override
-  _SignupPageState createState() => _SignupPageState();
+  _LoginWidgetState createState() => _LoginWidgetState();
 }
 
-class _SignupPageState extends State<SignupPage> {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _nameController = TextEditingController();
-  final _idController = TextEditingController();
+class _LoginWidgetState extends State<LoginWidget> {
+  //구글 로그인 프로세스
+
 
   final formkey = GlobalKey<FormState>();
+  final _auth = FirebaseAuth.instance;
+  String email = '';
+  String userId = '';
+  String password = '';
   bool isloading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-            size: 30,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
       body: isloading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
+          ? const Center(
+        child: CircularProgressIndicator(),
+      )
           : Form(
-              key: formkey,
-              child: AnnotatedRegion<SystemUiOverlayStyle>(
-                value: SystemUiOverlayStyle.light,
-                child: Stack(
-                  children: [
-                    Container(
-                      height: double.infinity,
-                      width: double.infinity,
-                      color: Colors.white,
-                      child: SingleChildScrollView(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                        child: Column(
+        key: formkey,
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: Stack(
+            children: [
+              Container(
+                height: double.infinity,
+                width: double.infinity,
+                color: Colors.white,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 30, vertical: 70),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Sign In",
+                        style: TextStyle(
+                            fontFamily: 'Yrsa',
+                            fontSize: 25,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 30),
+                      TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        onChanged: (value) {
+                          email = value;
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Please enter Email";
+                          }
+                          return null;
+                        },
+                        textAlign: TextAlign.left,
+                        decoration:
+                        const InputDecoration(hintText: 'Email'),
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        obscureText: true,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Please enter Password";
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          password = value;
+                        },
+                        textAlign: TextAlign.left,
+                        decoration:
+                        const InputDecoration(hintText: 'Password'),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        child: const Text('Confirm'),
+                        style: ElevatedButton.styleFrom(
+                          primary: const Color(
+                              0xFFB9C98C), // set the background color
+
+                          minimumSize: const Size(300, 35),
+                        ),
+                        onPressed: () async {
+                          if (formkey.currentState!.validate()) {
+                            setState(() {
+                              isloading = true;
+                            });
+                            try {
+                              await _auth.signInWithEmailAndPassword(
+                                  email: email, password: password);
+
+                              await Navigator.pushNamed(context, '/home');
+
+                              setState(() {
+                                isloading = false;
+                              });
+                            } on FirebaseAuthException catch (e) {
+                              showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: const Text("Login Failed"),
+                                  content: Text('${e.message}'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(ctx).pop();
+                                      },
+                                      child: const Text('Okay'),
+                                    )
+                                  ],
+                                ),
+                              );
+                              print(e);
+                            }
+                            setState(() {
+                              isloading = false;
+                            });
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 30),
+                      GestureDetector(
+                        onTap: () {
+                          // Navigator.of(context).push(
+                          //   MaterialPageRoute(
+                          //     builder: (context) => SignupScreen(),
+                          //   ),
+                          // );
+                        },
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children:  [
+                            Text(
+                              "Don't have an Account ?",
+                              style: TextStyle(
+                                  fontSize: 15, color: Colors.black87),
+                            ),
+                            SizedBox(width: 10),
                             Hero(
                               tag: '1',
-                              child: Text(
-                                "Sign up",
-                                style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
+                              child: TextButton(
+                                child: Text(
+                                  'Sign up',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black),
+                                ),
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/signup');
+                                },
                               ),
-                            ),
-                            SizedBox(height: 5),
-                            TextFormField(
-                              controller: _idController,
-                              decoration: new InputDecoration(hintText: 'ID'),
-                              // validator: (value) {
-                              //   if (value!.isEmpty) {
-                              //     return "Please enter ID";
-                              //   }
-                              // },
-                              // onChanged: (value) {
-                              //   userId = value;
-                              // },
-                              textAlign: TextAlign.left,
-                            ),
-                            SizedBox(height: 5),
-                            TextFormField(
-                              controller: _nameController,
-                              decoration: new InputDecoration(hintText: 'Name'),
-                              // validator: (value) {
-                              //   if (value!.isEmpty) {
-                              //     return "Please enter Name";
-                              //   }
-                              // },
-                              // onChanged: (value) {
-                              //   userName = value;
-                              // },
-                              textAlign: TextAlign.left,
-                            ),
-                            SizedBox(height: 5),
-                            TextFormField(
-                              controller: _usernameController,
-                              decoration:
-                                  new InputDecoration(hintText: 'Email'),
-                              keyboardType: TextInputType.emailAddress,
-                              // onChanged: (value) {
-                              //   email = value.toString().trim();
-                              // },
-                              // validator: (value) => (value!.isEmpty)
-                              //     ? ' Please enter email'
-                              //     : null,
-                              textAlign: TextAlign.left,
-                            ),
-                            SizedBox(height: 5),
-                            TextFormField(
-                              controller: _passwordController,
-                              decoration:
-                                  new InputDecoration(hintText: 'Password'),
-                              obscureText: true,
-                              // validator: (value) {
-                              //   if (value!.isEmpty) {
-                              //     return "Please enter Password";
-                              //   }
-                              // },
-                              // onChanged: (value) {
-                              //   password = value;
-                              // },
-                              textAlign: TextAlign.left,
-                            ),
-                            SizedBox(height: 20),
-                            ElevatedButton(
-                              child: const Text('Confirm'),
-                              style: ElevatedButton.styleFrom(
-                                primary: Color(0xFFB9C98C),
-                                // set the background color
-
-                                minimumSize: Size(300, 35),
-                              ),
-                              onPressed: () {
-                                registerAccount(
-                                    _usernameController.text,
-                                    _idController.text,
-                                    _passwordController.text,
-                                    _nameController.text,
-                                    (e) => _showErrorDialog(
-                                        context, 'Invalid email', e));
-                                _idController.clear();
-                                _nameController.clear();
-                                _usernameController.clear();
-                                _passwordController.clear();
-                                Navigator.pushNamed(context, '/login');
-                              },
-                            ),
+                            )
                           ],
                         ),
                       ),
-                    )
-                  ],
+
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  void _showErrorDialog(BuildContext context, String title, Exception e) {
-    showDialog<void>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(
-            title,
-            style: const TextStyle(fontSize: 24),
-          ),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(
-                  '${(e as dynamic).message}',
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'OK',
-                style: TextStyle(color: Colors.deepPurple),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
-  Future<void> registerAccount(
-      String email,
-      String displayName,
-      String password,
-      String name,
-      void Function(FirebaseAuthException e) errorCallback) async {
-    try {
-      var credential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      await credential.user!.updateDisplayName(displayName);
-    } on FirebaseAuthException catch (e) {
-      errorCallback(e);
-    }
-    FirebaseFirestore.instance
-        .collection('user')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .set(<String, dynamic>{
-      'image':
-          "https://firebasestorage.googleapis.com/v0/b/yorijori-52f2a.appspot.com/o/defaultProfile.png?alt=media&token=127cd072-80b8-4b77-ab22-a50a0dfa5206",
-      'email': email,
-      'name': name,
-      'id': displayName,
-      'password': password,
-      'followers': "20",
-      'uid': FirebaseAuth.instance.currentUser!.uid,
-    });
-  }
 }
+
+// class LoginWidget extends StatelessWidget {
+//   const LoginWidget({Key? key}) : super(key: key);
+//
+//   //구글 로그인 프로세스
+//   Future<UserCredential> signInWithGoogle() async {
+//     // Trigger the authentication flow
+//     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+//
+//     // Obtain the auth details from the request
+//     final GoogleSignInAuthentication? googleAuth =
+//         await googleUser?.authentication;
+//
+//     // Create a new credential
+//     final credential = GoogleAuthProvider.credential(
+//       accessToken: googleAuth?.accessToken,
+//       idToken: googleAuth?.idToken,
+//     );
+//
+//     // Once signed in, return the UserCredential
+//     return await FirebaseAuth.instance.signInWithCredential(credential);
+//   }
+//
+//   void _signUp() async {
+//     //await이니까 async로
+//     try {
+//       await FirebaseAuth.instance.createUserWithEmailAndPassword(
+//         email: "eunho111@naver.com",
+//         password: "1234",
+//       );
+//     } on FirebaseAuthException catch (e) {
+//       if (e.code == 'weak-password') {
+//         print('The password provided is too weak.');
+//       } else if (e.code == 'email-already-in-use') {
+//         print('The account already exists for that email.');
+//       }
+//     } catch (e) {
+//       print(e);
+//     }
+//   }
+//
+//   void _signIn() async {
+//     try {
+//       await FirebaseAuth.instance.signInWithEmailAndPassword(
+//           email: "eunho111@naver.com", password: "1234");
+//     } on FirebaseAuthException catch (e) {
+//       if (e.code == 'user-not-found') {
+//         print('No user found for that email.');
+//       } else if (e.code == 'wrong-password') {
+//         print('Wrong password provided for that user.');
+//       }
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//         appBar: AppBar(
+//           title: Text("회원 로그인 "),
+//         ),
+//         body: Center(
+//           child: Column(
+//             //버튼 나열하기
+//             mainAxisAlignment: MainAxisAlignment.center, //로그인 버튼을 중앙정렬로
+//             children: [
+//               ElevatedButton(
+//                   onPressed: _signUp, //_signUp 이벤트로 처리하기
+//                   child: Text("회원가입")),
+//               ElevatedButton(onPressed: _signIn, child: Text("로그인")),
+//               TextButton(
+//                 style: TextButton.styleFrom(
+//                   primary: Colors.red,
+//                   //primary: Colors.red.withOpacity(0.3),
+//                 ),
+//                 onPressed: signInWithGoogle, //버튼을 누르면 구글 signin 실행
+//                 child: Text("Google Login"),
+//               ),
+//             ],
+//           ),
+//         )); //로그인을 구현하기
+//   }
+// }

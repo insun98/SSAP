@@ -28,12 +28,14 @@ class _ViewGroupState extends State<ViewGroup> {
           widget.group.groupName,
           style: const TextStyle(color: Colors.black),
         ),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.menu,
-            color: Colors.grey,
+        leading: Builder(
+          builder: (context) => IconButton(
+            color: Colors.black,
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
           ),
-          onPressed: () {Scaffold.of(context).openDrawer();},
         ),
         actions: <Widget>[
           IconButton(
@@ -90,7 +92,7 @@ class _ViewGroupState extends State<ViewGroup> {
                 'Group List',
                 style: TextStyle(color: Color(0xFFB9C98C)),
               ),
-              onTap: () {},
+              onTap: () {Navigator.pushNamed(context, '/groupList');},
             ),
             ListTile(
               leading: const Icon(

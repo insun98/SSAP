@@ -47,7 +47,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
           style: TextStyle(color: Colors.black),
         ),
         elevation: 0.0,
-        title:Text('Group',style: TextStyle(color:Colors.black),),
+
         leading: IconButton(
           icon: const Icon(
             Icons.cancel,
@@ -66,7 +66,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            AddGroupPage2(groupMembers: groupMembers)));
+                            RadioGroup(groupMembers: groupMembers)));
               },
             ),
           ),
@@ -143,7 +143,7 @@ class RadioGroup extends StatefulWidget {
   const RadioGroup({required this.groupMembers});
 
   @override
-  _AddGroupPageState2 createState() => _AddGroupPageState2();
+  RadioGroupWidget createState() => RadioGroupWidget();
 }
 
 
@@ -160,7 +160,7 @@ class RadioGroupWidget extends State<RadioGroup> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         bottomOpacity: 0.0,
-        title:Text('Group',style: TextStyle(color:Colors.black),),
+
         elevation: 0.0,
         title: Text(
           'Group Setting',
@@ -257,14 +257,14 @@ class _GroupListState extends State<GroupList> {
           "Group",
           style: const TextStyle(color: Colors.black),
         ),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.menu,
-            color: Colors.grey,
+        leading: Builder(
+          builder: (context) => IconButton(
+            color: Colors.black,
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
           ),
-          onPressed: () {
-            Scaffold.of(context).openDrawer();
-          },
         ),
         actions: <Widget>[
           IconButton(
@@ -369,60 +369,59 @@ class _GroupListState extends State<GroupList> {
       ),
       body: Consumer<GroupProvider>(
         builder: (context, group, _) => SafeArea(
-          child: Center(
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                children: [
-                  Container(
-                      margin: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          const Divider(color: Colors.grey,),
-                          SizedBox(
-                              height: 50,
-                              child: ListView.separated(
-                                padding: const EdgeInsets.all(8),
-                                itemCount: group.groups.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return SizedBox(
-                                    height: 30,
-                                   child: Row(children:[TextButton(
-                                     onPressed: () {
-                                       Navigator.push(
-                                           context,
-                                           MaterialPageRoute(
-                                               builder: (context) => ViewGroup(group: group.groups[index])));
-                                     },
-                                     child: Text(
-                                       "${group.groups[index].groupName}    (${group.groups[index].members.length})",
-                                       style: TextStyle(color: Colors.black),
-                                     ),
-                                   ),
-
-
-
-                                    ],
-
-                                   ),
-
-                                  );
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                  return const Divider(color: Colors.grey,);
-                                },
-                              )),
-                          const Divider(color: Colors.grey,),
-                        ],
-                      ))
-                ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                margin: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    const Divider(
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      height: 50,
+                      child: ListView.separated(
+                          padding: const EdgeInsets.all(8),
+                          itemCount: group.groups.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final item = group.groups[index].groupName;
+                            return Dismissible(
+                              key: UniqueKey(),
+                              onDismissed: (direction) {
+                                groupProvider.delete(group.groups[index].groupName);
+                              },
+                              child: Container(
+                                height: 40,
+                                child: Center(
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => ViewGroup(group: group.groups[index])));
+                                    },
+                                    child: Text(
+                                      "${group.groups[index].groupName}    (${group.groups[index].members.length})",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return Divider();
+                          }),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),
@@ -430,6 +429,7 @@ class _GroupListState extends State<GroupList> {
     );
   }
 }
+
 class AddGroupSchedule extends StatefulWidget {
   const AddGroupSchedule({
     Key? key,
@@ -444,7 +444,7 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
   String _curType = 'type1';
   DateTime startTime = DateTime.parse(DateTime.now().toString());
   DateTime endTime =
-  DateTime.parse(DateTime.now().add(const Duration(hours: 2)).toString());
+      DateTime.parse(DateTime.now().add(const Duration(hours: 2)).toString());
   final TextEditingController _controller1 = TextEditingController();
   final TextEditingController _hourController = TextEditingController();
   final TextEditingController _minController = TextEditingController();
@@ -464,37 +464,35 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
               color: Colors.black,
             )),
         actions: [
-          TextButton(
-            onPressed: () {
-              context
-                  .read<ScheduleProvider>()
-                  .addSchedule(_controller1.text, startTime, endTime, null);
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('Add schedule'),
-              ));
-            },
-            child: const Text(
-              'add',
-              style: TextStyle(
-                color: Color(0xFFB9C98C),
-              ),
-            ),
-          ),
+          // TextButton(
+          //   onPressed: () {
+          //     context
+          //         .read<ScheduleProvider>()
+          //         .addSchedule(_controller1.text, startTime, endTime, null);
+          //     Navigator.pop(context);
+          //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          //       content: Text('Add schedule'),
+          //     ));
+          //   },
+          //   child: const Text(
+          //     'add',
+          //     style: TextStyle(
+          //       color: Color(0xFFB9C98C),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
-      body:  Container(
+      body: Container(
         //width: MediaQuery.of(context).size.width - 10,
         //height: MediaQuery.of(context).size.height - 80,
         //padding: const EdgeInsets.all(20),
         color: Colors.white,
         child: Column(
           children: [
-
             const SizedBox(
               height: 30,
             ),
-
             TextFormField(
               controller: _controller1,
               decoration: const InputDecoration(
@@ -502,20 +500,25 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
                   hintText: ' meeting title',
                   contentPadding: EdgeInsets.only(left: 20)),
             ),
-             SizedBox(
-              height: 100,
-              child: Container(margin:EdgeInsets.all(20),child: Row(children:[Text('Duration: '), Expanded(child:TextFormField(
-                controller: _hourController,
-                decoration: const InputDecoration(
-
-                    contentPadding: EdgeInsets.only(left: 100)),
-              )),Text('mins'),],),)),
-
-
-
-
+            SizedBox(
+                height: 100,
+                child: Container(
+                  margin: EdgeInsets.all(20),
+                  child: Row(
+                    children: [
+                      Text('Duration: '),
+                      Expanded(
+                          child: TextFormField(
+                        controller: _hourController,
+                        decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.only(left: 100)),
+                      )),
+                      Text('mins'),
+                    ],
+                  ),
+                )),
             DateTimePicker(
-              //textAlign: TextAlign.center,
+                //textAlign: TextAlign.center,
                 type: DateTimePickerType.dateTimeSeparate,
                 dateMask: 'd MMM, yyyy',
                 //controller: _controller1,
@@ -534,15 +537,15 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
                 //   return true;
                 // },
                 onChanged: (val) => setState(() {
-                  startTime = DateTime.parse(val);
-                  print(startTime);
-                }),
+                      startTime = DateTime.parse(val);
+                      print(startTime);
+                    }),
                 validator: (val) {
                   //setState(() => _valueToValidate1 = val ?? '');
                   return null;
                 },
                 onSaved: (val) {} //setState(() => _valueSaved1 = val ?? ''),
-            ),
+                ),
             DateTimePicker(
                 enableInteractiveSelection: true,
                 type: DateTimePickerType.dateTimeSeparate,
@@ -564,35 +567,34 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
                 //   return true;
                 // },
                 onChanged: (val) => setState(() {
-                  //_valueChanged2 = val;
-                  endTime = DateTime.parse(val);
+                      //_valueChanged2 = val;
+                      endTime = DateTime.parse(val);
 
-                  // if(endTime.isBefore(startTime)){
-                  //   print('hi');
-                  //   _controller2.clear();
-                  //   //_controller2.text = _controller1.text;
-                  // }
-                  // else{
-                  //   _controller2 = TextEditingController(text: val);
-                  //   endTime = DateTime.parse(val);
-                  // }
-                }),
+                      // if(endTime.isBefore(startTime)){
+                      //   print('hi');
+                      //   _controller2.clear();
+                      //   //_controller2.text = _controller1.text;
+                      // }
+                      // else{
+                      //   _controller2 = TextEditingController(text: val);
+                      //   endTime = DateTime.parse(val);
+                      // }
+                    }),
                 validator: (val) {
                   //setState(() => _valueToValidate2 = val ?? '');
                   return null;
                 },
                 onSaved: (val) {} //=> setState(() => _valueSaved2 = val ?? ''),
-            ),
-
+                ),
           ],
         ),
       ),
-
     );
   }
 }
+
 class groupInfo {
-  groupInfo({required this.groupName, docId,  members});
+  groupInfo({required this.groupName, docId, members});
   List<userInfo> members = [];
   String docId = "";
   String groupName;

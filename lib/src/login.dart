@@ -19,7 +19,7 @@ import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
 
-import '../Provider/AuthProvider.dart';
+
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);

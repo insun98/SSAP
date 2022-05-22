@@ -177,7 +177,6 @@ class _SignupPageState extends State<SignupPage> {
       'name': name,
       'id': displayName,
       'password': password,
-      'followers': "20",
       'uid': FirebaseAuth.instance.currentUser!.uid,
     });
 

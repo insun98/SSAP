@@ -47,14 +47,13 @@ class _AddGroupPageState extends State<AddGroupPage> {
           style: TextStyle(color: Colors.black),
         ),
         elevation: 0.0,
+        title:Text('Group',style: TextStyle(color:Colors.black),),
         leading: IconButton(
           icon: const Icon(
             Icons.cancel,
             color: Colors.grey,
           ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () {Navigator.pop(context);},
         ),
         actions: <Widget>[
           Container(
@@ -67,7 +66,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            RadioGroup(groupMembers: groupMembers)));
+                            AddGroupPage2(groupMembers: groupMembers)));
               },
             ),
           ),
@@ -142,11 +141,15 @@ class _AddGroupPageState extends State<AddGroupPage> {
 class RadioGroup extends StatefulWidget {
   final List<userInfo> groupMembers;
   const RadioGroup({required this.groupMembers});
+
   @override
-  RadioGroupWidget createState() => RadioGroupWidget();
+  _AddGroupPageState2 createState() => _AddGroupPageState2();
 }
 
+
 class RadioGroupWidget extends State<RadioGroup> {
+
+ 
   final _controller = TextEditingController();
   Schedule schedule = Schedule(title: "", dateTime: "");
   groupInfo group = groupInfo(groupName: "");
@@ -157,6 +160,7 @@ class RadioGroupWidget extends State<RadioGroup> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         bottomOpacity: 0.0,
+        title:Text('Group',style: TextStyle(color:Colors.black),),
         elevation: 0.0,
         title: Text(
           'Group Setting',
@@ -167,9 +171,9 @@ class RadioGroupWidget extends State<RadioGroup> {
             Icons.cancel,
             color: Colors.grey,
           ),
-          onPressed: () {
-            Navigator.pushNamed(context, '/home');
-          },
+
+          onPressed: () {Navigator.pushNamed(context,'/home');},
+
         ),
         actions: <Widget>[
           Container(

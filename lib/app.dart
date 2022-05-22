@@ -22,6 +22,7 @@ import 'package:shrine/src/friendlisttest.dart';
 
 import 'package:shrine/src/scheduleView.dart';
 import 'package:shrine/src/signup.dart';
+
 import 'src/login.dart';
 
 
@@ -41,7 +42,8 @@ class ShrineApp extends StatelessWidget {
         '/addGroup': (BuildContext context) => const AddGroupPage(),
 
         '/home': (BuildContext context) => const MyHomePage(),
-
+        '/login': (BuildContext context) => const LoginWidget(),
+        '/signup': (BuildContext context) => const SignupPage(),
         '/groupList': (BuildContext context) => const GroupList(),
         '/addgroupSchedule': (BuildContext context) => const AddGroupSchedule(),
         '/addFriend': (BuildContext context) => const AddFriend(),

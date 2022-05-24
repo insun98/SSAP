@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
+import 'package:shrine/Provider/FriendProvider.dart';
 
 import '../Provider/GroupProvider.dart';
 import '../Provider/NotificationProvider.dart';
@@ -21,6 +22,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
 
   Widget build(BuildContext context) {
+    FriendProvider friendProvider = Provider.of<FriendProvider>(context);
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
     return Consumer<NotificationProvider>(
       builder: (context, notify, _) =>Scaffold(
@@ -55,7 +57,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 Icons.post_add_sharp,
                 color: Color(0xffB9C98C),
               ),
-              onPressed: () {Navigator.pushNamed(context, '/addgroupSchedule');},
+              onPressed: () {},
             ),
             IconButton(
               icon: const Icon(

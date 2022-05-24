@@ -206,7 +206,7 @@ class RadioGroupWidget extends State<RadioGroup> {
                 print("gg${groupDocId}");
 
                 groupInfo group = await groupProvider.setGroup(groupDocId);
-                print(group.groupName);
+
                 Navigator.pushNamed(context, '/viewGroup');
               },
 

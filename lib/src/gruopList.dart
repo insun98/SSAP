@@ -213,9 +213,13 @@ class _GroupListState extends State<GroupList> {
                         child: ListView.separated(
                           padding: const EdgeInsets.all(8),
                           itemCount: group.groups.length,
+
                           itemBuilder: (BuildContext context, int index) {
                             return Dismissible(
                               key: UniqueKey(),
+                              onDismissed:(direction) {
+
+                              },
                               child: SizedBox(
                               height: 50,
                               child: Row(children:[TextButton(

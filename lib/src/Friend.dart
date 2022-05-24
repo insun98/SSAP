@@ -60,44 +60,22 @@ class _AddFriendState extends State<AddFriend> {
                   ),
                   onChanged: (value) {
                     setState(() {
-                      if (_controller.text == null) {
-                        user = groupProvider.searchUser(_controller.text)!;
-                      }
-                      String name = value;
-                      user = groupProvider.searchUser(_controller.text)!;
+                      user = group.searchingUser(_controller.text);
                     });
                   },
                 ),
+                TextButton(
+                  onPressed: () {
+                    _controller.clear();
+                    friendProvider.addFriend(user.uid);
+                    group.clear();
 
-                SizedBox(
-                    height: 500,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.all(8),
-                      itemCount: foundUsers.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return SizedBox(
-                          height: 30,
-                          child: TextButton(
-                            onPressed: () {
 
-                              _controller.clear();
+                  },
+                  child:  user.name.isNotEmpty?Text(
+                      "${user.name}(${user.id})", style: TextStyle(color: Colors.black)):const Text(""),
 
-                                //  friendProvider.addFriend();
-                            },
-                            child: Text(
-                              "${foundUsers[index].name}(${foundUsers[index].id})",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ),
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const Divider();
-                      },
-                    )),
-                // RadioGrou
-                //           users: groupProvider.user,
-                //         ),
+                ),
               ],
             ),
           ),

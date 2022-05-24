@@ -182,10 +182,39 @@ class RadioGroupWidget extends State<RadioGroup> {
             'Group Setting',
             style: TextStyle(color: Colors.black),
           ),
+
           leading: IconButton(
             icon: const Icon(
               Icons.cancel,
               color: Colors.grey,
+
+
+          onPressed: () {Navigator.pushNamed(context,'/home');},
+
+        ),
+        actions: <Widget>[
+          Container(
+            padding: const EdgeInsets.all(10),
+            child: ElevatedButton(
+              child: const Text('OK'),
+              style: ElevatedButton.styleFrom(primary: const Color(0xFFB9C98C)),
+              onPressed: () async {
+                List<dynamic> members = [];
+
+                for (var member in widget.groupMembers) {
+                  members.add(member.uid);
+                }
+
+                String groupDocId = await groupProvider.addGroup(
+                    members, _controller.text);
+                print("gg${groupDocId}");
+
+                groupInfo group = await groupProvider.setGroup(groupDocId);
+
+                Navigator.pushNamed(context, '/viewGroup');
+              },
+
+
             ),
             onPressed: () {
               Navigator.pushNamed(context, '/home');

@@ -182,14 +182,14 @@ class _ViewGroupState extends State<ViewGroup> {
                               padding: const EdgeInsets.all(8),
                               itemCount:  group.singleGroup.member.length,
                               itemBuilder: (BuildContext context, int index)  {
-                                userInfo? user =   groupProvider.searchUser(group.singleGroup.member[index]);
+                                groupProvider.searchUser(group.singleGroup.member[index]);
                                 print("user: ${group.singleUser.name}");
                                 return SizedBox(
                                   height: 30,
                                   child: Text(
 
 
-                                    "${ user?.name}(${ user?.id})",
+                                    "${ group.singleUser.name}(${ group.singleUser.id})",
                                     style: const TextStyle(color: Colors.black),
                                   ),
                                 );

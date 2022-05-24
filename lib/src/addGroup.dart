@@ -14,7 +14,7 @@
 
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_switch/flutter_switch.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shrine/src/ViewGroup.dart';
 
@@ -92,7 +92,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                   ),
                   onChanged: (value) {
                     setState(() {
-                        user = group.searchUserwithId(_controller.text)!;
+                        user = group.searchingUser(_controller.text);
                     });
                   },
                 ),
@@ -101,7 +101,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                     _controller.clear();
                     groupMembers.add(user);
                     group.clear();
-                    user.name = "";
+
 
                   },
                   child:  user.name.isNotEmpty?Text(
@@ -168,7 +168,8 @@ class RadioGroupWidget extends State<RadioGroup> {
   @override
   Widget build(BuildContext context) {
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
-    return Scaffold(
+    return Consumer<GroupProvider>(
+        builder: (context, group, _) => Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         bottomOpacity: 0.0,
@@ -248,6 +249,7 @@ class RadioGroupWidget extends State<RadioGroup> {
         ),
       ),
       resizeToAvoidBottomInset: false,
+        ),
     );
   }
 }

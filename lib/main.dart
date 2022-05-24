@@ -15,6 +15,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shrine/Provider/NotificationProvider.dart';
 
 
 import 'Provider/FriendProvider.dart';
@@ -42,6 +43,8 @@ class Myapp extends StatelessWidget {
             create: (_) => ScheduleProvider()),
         ChangeNotifierProvider<FriendProvider>(
             create: (_) => FriendProvider()),
+        ChangeNotifierProvider<NotificationProvider>(
+            create: (_) => NotificationProvider()),
 
       ],
       child: const ShrineApp(),

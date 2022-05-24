@@ -9,6 +9,7 @@ class ViewGroup extends StatefulWidget {
 
 
   const ViewGroup({Key? key}) : super(key: key);
+
   @override
   _ViewGroupState createState() => _ViewGroupState();
 }
@@ -17,17 +18,18 @@ class _ViewGroupState extends State<ViewGroup> {
   bool status = false;
   String name = "";
   @override
-  final groupInfo group = GroupProvider().singleGroup;
+
   Widget build(BuildContext context) {
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
-    return Scaffold(
+    return Consumer<GroupProvider>(
+        builder: (context, group, _) =>Scaffold(
       drawerScrimColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         bottomOpacity: 0.0,
         elevation: 0.0,
         title: Text(
-          group.groupName,
+          groupProvider.singleGroup.groupName,
           style: const TextStyle(color: Colors.black),
         ),
         leading: Builder(
@@ -45,7 +47,7 @@ class _ViewGroupState extends State<ViewGroup> {
               Icons.notifications_active,
               color: Color(0xffB9C98C),
             ),
-            onPressed: () {},
+            onPressed: () {Navigator.pushNamed(context, '/Notification');},
           ),
           IconButton(
             icon: const Icon(
@@ -148,7 +150,8 @@ class _ViewGroupState extends State<ViewGroup> {
       ),
        body:
 
-      SafeArea(
+
+        SafeArea(
         child: Center(
           child: Container(
             padding: const EdgeInsets.all(10),
@@ -177,14 +180,16 @@ class _ViewGroupState extends State<ViewGroup> {
                             height: 100,
                             child: ListView.builder(
                               padding: const EdgeInsets.all(8),
-                              itemCount: group.members.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                userInfo user = groupProvider.searchUser(group.members[index]);
+                              itemCount:  group.singleGroup.member.length,
+                              itemBuilder: (BuildContext context, int index)  {
+                                userInfo? user =   groupProvider.searchUser(group.singleGroup.member[index]);
+                                print("user: ${group.singleUser.name}");
                                 return SizedBox(
                                   height: 30,
                                   child: Text(
 
-                                    "${user.name}(${user.id})",
+
+                                    "${ user?.name}(${ user?.id})",
                                     style: const TextStyle(color: Colors.black),
                                   ),
                                 );
@@ -220,7 +225,9 @@ class _ViewGroupState extends State<ViewGroup> {
           ),
         ),
       ),
+
       resizeToAvoidBottomInset: false,
+        ),
     );
   }
 }

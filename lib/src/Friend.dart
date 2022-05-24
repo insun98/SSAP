@@ -19,7 +19,7 @@ class _AddFriendState extends State<AddFriend> {
 
   String name = "";
   List<userInfo> foundUsers = [];
-  userInfo user = userInfo(Userid: "", name: "", uid: "", photo: "");
+  userInfo user = userInfo(id: "", name: "", uid: "", image: "");
   @override
   Widget build(BuildContext context) {
     FriendProvider friendProvider = Provider.of<FriendProvider>(context);
@@ -61,10 +61,10 @@ class _AddFriendState extends State<AddFriend> {
                   onChanged: (value) {
                     setState(() {
                       if (_controller.text == null) {
-                        foundUsers = groupProvider.searchUser(_controller.text);
+                        user = groupProvider.searchUser(_controller.text);
                       }
                       String name = value;
-                      foundUsers = groupProvider.searchUser(_controller.text);
+                      user = groupProvider.searchUser(_controller.text);
                     });
                   },
                 ),
@@ -87,7 +87,7 @@ class _AddFriendState extends State<AddFriend> {
                                   friendProvider.addFriend(foundUsers[index]);
                             },
                             child: Text(
-                              "${foundUsers[index].name}(${foundUsers[index].Userid})",
+                              "${foundUsers[index].name}(${foundUsers[index].id})",
                               style: TextStyle(color: Colors.black),
                             ),
                           ),

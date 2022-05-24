@@ -6,16 +6,18 @@ import '../Provider/GroupProvider.dart';
 import 'addGroup.dart';
 
 class ViewGroup extends StatefulWidget {
-  final groupInfo group;
-  const ViewGroup({required this.group});
+
+
+  const ViewGroup({Key? key}) : super(key: key);
   @override
   _ViewGroupState createState() => _ViewGroupState();
 }
 
 class _ViewGroupState extends State<ViewGroup> {
   bool status = false;
-
+  String name = "";
   @override
+  final groupInfo group = GroupProvider().singleGroup;
   Widget build(BuildContext context) {
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
     return Scaffold(
@@ -25,7 +27,7 @@ class _ViewGroupState extends State<ViewGroup> {
         bottomOpacity: 0.0,
         elevation: 0.0,
         title: Text(
-          widget.group.groupName,
+          group.groupName,
           style: const TextStyle(color: Colors.black),
         ),
         leading: Builder(
@@ -144,7 +146,9 @@ class _ViewGroupState extends State<ViewGroup> {
           ],
         ),
       ),
-      body: SafeArea(
+       body:
+
+      SafeArea(
         child: Center(
           child: Container(
             padding: const EdgeInsets.all(10),
@@ -173,12 +177,14 @@ class _ViewGroupState extends State<ViewGroup> {
                             height: 100,
                             child: ListView.builder(
                               padding: const EdgeInsets.all(8),
-                              itemCount: widget.group.members.length,
+                              itemCount: group.members.length,
                               itemBuilder: (BuildContext context, int index) {
+                                userInfo user = groupProvider.searchUser(group.members[index]);
                                 return SizedBox(
                                   height: 30,
                                   child: Text(
-                                    "${widget.group.members[index].name}(${widget.group.members[index].Userid})",
+
+                                    "${user.name}(${user.id})",
                                     style: const TextStyle(color: Colors.black),
                                   ),
                                 );
@@ -218,3 +224,4 @@ class _ViewGroupState extends State<ViewGroup> {
     );
   }
 }
+

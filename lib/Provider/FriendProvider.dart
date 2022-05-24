@@ -12,8 +12,8 @@ class FriendProvider extends ChangeNotifier {
     product
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('Friend')
-        .doc(friend.Userid)
-        .set(<String, dynamic>{'name': friend.name,'id':friend.Userid});
+        .doc(friend.id)
+        .set(<String, dynamic>{'name': friend.name,'id':friend.id});
   }
 
 }

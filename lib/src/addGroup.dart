@@ -19,7 +19,7 @@ import 'package:provider/provider.dart';
 import 'package:shrine/src/ViewGroup.dart';
 
 import '../Provider/GroupProvider.dart';
-import '../Provider/scheduleProvider.dart';
+
 
 class AddGroupPage extends StatefulWidget {
   const AddGroupPage({Key? key}) : super(key: key);
@@ -31,10 +31,7 @@ class AddGroupPage extends StatefulWidget {
 class _AddGroupPageState extends State<AddGroupPage> {
   final _controller = TextEditingController();
   List<userInfo> groupMembers = [];
-
-  String name = "";
-  List<userInfo> foundUsers = [];
-  userInfo user = userInfo(Userid: "", name: "", uid: "", photo: "");
+  userInfo user = userInfo(id: "", name: "", uid: "", image: "");
   @override
   Widget build(BuildContext context) {
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
@@ -43,7 +40,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
         backgroundColor: Colors.transparent,
         bottomOpacity: 0.0,
         title: Text(
-          'Select Friends',
+          'Search Friends',
           style: TextStyle(color: Colors.black),
         ),
         elevation: 0.0,
@@ -79,6 +76,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height:30,),
                 TextFormField(
                   controller: _controller,
                   decoration: const InputDecoration(
@@ -88,37 +86,43 @@ class _AddGroupPageState extends State<AddGroupPage> {
                   ),
                   onChanged: (value) {
                     setState(() {
-                      if (_controller.text == null) {
-                        foundUsers = groupProvider.searchUser(_controller.text);
-                      }
-                      String name = value;
-                      foundUsers = groupProvider.searchUser(_controller.text);
+                        user = groupProvider.searchUser(_controller.text);
                     });
                   },
                 ),
+                TextButton(
+                  onPressed: () {
+                    _controller.clear();
+                    groupMembers.add(user);
+                    group.clear();
 
+                  },
+                  child:  user.name.isNotEmpty?Text(
+                    "${user.name}(${user.id})", style: TextStyle(color: Colors.black)):const Text(""),
+
+                  ),
+                SizedBox(height:100),
+
+            groupMembers.length>0? Text(' <'
+                    ' Added Members>', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold
+                ),) :Text(""),
                 SizedBox(
-                    height: 500,
+                    height: 200,
                     child: ListView.separated(
                       padding: const EdgeInsets.all(8),
-                      itemCount: foundUsers.length,
+                      itemCount: groupMembers.length,
                       itemBuilder: (BuildContext context, int index) {
                         return SizedBox(
                           height: 30,
-                          child: TextButton(
-                            onPressed: () {
-                              if (!groupMembers.contains(foundUsers[index])) {
-                                groupMembers.add(foundUsers[index]);
-                              }
-                              _controller.clear();
-                              foundUsers =
-                                  groupProvider.searchUser(_controller.text);
-                            },
-                            child: Text(
-                              "${foundUsers[index].name}(${foundUsers[index].Userid})",
+                            child: Row(children:[
+
+                              Text(
+                              "${groupMembers[index].name}(${groupMembers[index].id})",
                               style: TextStyle(color: Colors.black),
-                            ),
+
                           ),
+                          ],
+                            ),
                         );
                       },
                       separatorBuilder: (BuildContext context, int index) {
@@ -182,14 +186,18 @@ class RadioGroupWidget extends State<RadioGroup> {
               child: const Text('OK'),
               style: ElevatedButton.styleFrom(primary: const Color(0xFFB9C98C)),
               onPressed: () async {
-                group.members = widget.groupMembers;
-                print(group.members[0].name);
-                group.groupName = _controller.text;
-                groupProvider.addGroup(widget.groupMembers, _controller.text);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ViewGroup(group: group)));
+
+                List<String> members=[];
+
+                for(var member in widget.groupMembers){
+                  members.add(member.uid);
+                }
+
+                String groupDocId = await groupProvider.addGroup(members,_controller.text);
+                 await groupProvider.setGroup(groupDocId);
+                Navigator.pushNamed(context, '/viewGroup');
+
+
               },
             ),
           ),
@@ -217,7 +225,7 @@ class RadioGroupWidget extends State<RadioGroup> {
                         return SizedBox(
                           height: 30,
                           child: Text(
-                              "${widget.groupMembers[index].name}(${widget.groupMembers[index].Userid})"),
+                              "${widget.groupMembers[index].name}(${widget.groupMembers[index].id})"),
                         );
                       },
                       separatorBuilder: (BuildContext context, int index) {
@@ -243,7 +251,7 @@ class GroupList extends StatefulWidget {
 
 class _GroupListState extends State<GroupList> {
   bool status = false;
-  List<groupInfo> groups = [];
+
   @override
   Widget build(BuildContext context) {
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
@@ -275,13 +283,67 @@ class _GroupListState extends State<GroupList> {
                 Icons.person_add_alt_1,
                 color: Color(0xFFB9C98C),
               )),
-          IconButton(
-            icon: const Icon(
-              Icons.notifications_active,
-              color: Color(0xffB9C98C),
-            ),
-            onPressed: () {},
+          PopupMenuButton<String>(
+            icon: Icon(Icons.notifications,  color: Color(0xFFB9C98C),),
+            onSelected: (String result) {
+              switch (result) {
+                case 'filter1':
+                  print('filter 1 clicked');
+                  break;
+                case 'filter2':
+                  print('filter 2 clicked');
+                  break;
+                case 'clearFilters':
+                  print('Clear filters');
+                  break;
+                default:
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'filter1',
+                child: Text('Filter 1'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'filter2',
+                child: Text('Filter 2'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'clearFilters',
+                child: Text('Clear filters'),
+              ),
+            ],
           ),
+          PopupMenuButton<String>(
+            onSelected: (String result) {
+              switch (result) {
+                case 'option1':
+                  print('option 1 clicked');
+                  break;
+                case 'option2':
+                  print('option 2 clicked');
+                  break;
+                case 'delete':
+                  print('I want to delete');
+                  break;
+                default:
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'option1',
+                child: Text('Option 1'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'option2',
+                child: Text('Option 2'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'delete',
+                child: Text('Delete'),
+              ),
+            ],
+          )
         ],
       ),
       drawer: Drawer(
@@ -393,13 +455,11 @@ class _GroupListState extends State<GroupList> {
                               height: 50,
                               child: Row(children:[TextButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ViewGroup(group: group.groups[index])));
+
+                                  Navigator.pushNamed(context, '/viewGroup');
                                 },
                                 child: Text(
-                                  "${group.groups[index].groupName}    (${group.groups[index].members.length})",
+                                  "${group.groups[index].groupName}    (${group.groups[index].members.length.toString()})",
                                   style: TextStyle(color: Colors.black),
                                 ),
                               ),
@@ -578,7 +638,7 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
 
 class groupInfo {
   groupInfo({required this.groupName, docId, members});
-  List<userInfo> members = [];
+  List<String> members = [];
   String docId = "";
   String groupName;
 }

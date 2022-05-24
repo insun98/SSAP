@@ -19,8 +19,11 @@ import 'package:provider/provider.dart';
 import 'package:shrine/src/ViewGroup.dart';
 
 import '../Provider/GroupProvider.dart';
+
 import '../Provider/groupTime.dart';
 import '../Provider/scheduleProvider.dart';
+
+
 
 class AddGroupPage extends StatefulWidget {
   const AddGroupPage({Key? key}) : super(key: key);
@@ -32,19 +35,17 @@ class AddGroupPage extends StatefulWidget {
 class _AddGroupPageState extends State<AddGroupPage> {
   final _controller = TextEditingController();
   List<userInfo> groupMembers = [];
-
-  String name = "";
-  List<userInfo> foundUsers = [];
-  userInfo user = userInfo(Userid: "", name: "", uid: "", photo: "");
+  userInfo user = userInfo(id: "", name: "", uid: "", image: "");
   @override
   Widget build(BuildContext context) {
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
-    return Scaffold(
+    return Consumer<GroupProvider>(
+        builder: (context, group, _) =>Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         bottomOpacity: 0.0,
         title: Text(
-          'Select Friends',
+          'Search Friends',
           style: TextStyle(color: Colors.black),
         ),
         elevation: 0.0,
@@ -63,6 +64,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
               child: const Text('OK'),
               style: ElevatedButton.styleFrom(primary: const Color(0xFFB9C98C)),
               onPressed: () async {
+
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -80,6 +82,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height:30,),
                 TextFormField(
                   controller: _controller,
                   decoration: const InputDecoration(
@@ -89,37 +92,44 @@ class _AddGroupPageState extends State<AddGroupPage> {
                   ),
                   onChanged: (value) {
                     setState(() {
-                      if (_controller.text == null) {
-                        foundUsers = groupProvider.searchUser(_controller.text);
-                      }
-                      String name = value;
-                      foundUsers = groupProvider.searchUser(_controller.text);
+                        user = group.searchUserwithId(_controller.text)!;
                     });
                   },
                 ),
+                TextButton(
+                  onPressed: () {
+                    _controller.clear();
+                    groupMembers.add(user);
+                    group.clear();
+                    user.name = "";
 
+                  },
+                  child:  user.name.isNotEmpty?Text(
+                    "${user.name}(${user.id})", style: TextStyle(color: Colors.black)):const Text(""),
+
+                  ),
+                SizedBox(height:100),
+
+            groupMembers.length>0? Text(' <'
+                    ' Added Members>', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold
+                ),) :Text(""),
                 SizedBox(
-                    height: 500,
+                    height: 200,
                     child: ListView.separated(
                       padding: const EdgeInsets.all(8),
-                      itemCount: foundUsers.length,
+                      itemCount: groupMembers.length,
                       itemBuilder: (BuildContext context, int index) {
                         return SizedBox(
                           height: 30,
-                          child: TextButton(
-                            onPressed: () {
-                              if (!groupMembers.contains(foundUsers[index])) {
-                                groupMembers.add(foundUsers[index]);
-                              }
-                              _controller.clear();
-                              foundUsers =
-                                  groupProvider.searchUser(_controller.text);
-                            },
-                            child: Text(
-                              "${foundUsers[index].name}(${foundUsers[index].Userid})",
+                            child: Row(children:[
+
+                              Text(
+                              "${groupMembers[index].name}(${groupMembers[index].id})",
                               style: TextStyle(color: Colors.black),
-                            ),
+
                           ),
+                          ],
+                            ),
                         );
                       },
                       separatorBuilder: (BuildContext context, int index) {
@@ -135,6 +145,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
         ),
       ),
       resizeToAvoidBottomInset: false,
+        ),
     );
   }
 }
@@ -152,8 +163,8 @@ class RadioGroupWidget extends State<RadioGroup> {
 
  
   final _controller = TextEditingController();
-  Schedule schedule = Schedule(title: "", dateTime: "");
-  groupInfo group = groupInfo(groupName: "");
+
+
   @override
   Widget build(BuildContext context) {
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
@@ -183,15 +194,21 @@ class RadioGroupWidget extends State<RadioGroup> {
               child: const Text('OK'),
               style: ElevatedButton.styleFrom(primary: const Color(0xFFB9C98C)),
               onPressed: () async {
-                group.members = widget.groupMembers;
-                print(group.members[0].name);
-                group.groupName = _controller.text;
-                groupProvider.addGroup(widget.groupMembers, _controller.text);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ViewGroup(group: group)));
+                List<dynamic> members = [];
+
+                for (var member in widget.groupMembers) {
+                  members.add(member.uid);
+                }
+
+                String groupDocId = await groupProvider.addGroup(
+                    members, _controller.text);
+                print("gg${groupDocId}");
+
+                groupInfo group = await groupProvider.setGroup(groupDocId);
+                print(group.groupName);
+                Navigator.pushNamed(context, '/viewGroup');
               },
+
             ),
           ),
         ],
@@ -218,7 +235,7 @@ class RadioGroupWidget extends State<RadioGroup> {
                         return SizedBox(
                           height: 30,
                           child: Text(
-                              "${widget.groupMembers[index].name}(${widget.groupMembers[index].Userid})"),
+                              "${widget.groupMembers[index].name}(${widget.groupMembers[index].id})"),
                         );
                       },
                       separatorBuilder: (BuildContext context, int index) {
@@ -235,200 +252,7 @@ class RadioGroupWidget extends State<RadioGroup> {
   }
 }
 
-class GroupList extends StatefulWidget {
-  const GroupList({Key? key}) : super(key: key);
 
-  @override
-  _GroupListState createState() => _GroupListState();
-}
-
-class _GroupListState extends State<GroupList> {
-  bool status = false;
-  List<groupInfo> groups = [];
-  @override
-  Widget build(BuildContext context) {
-    GroupProvider groupProvider = Provider.of<GroupProvider>(context);
-    return Scaffold(
-      drawerScrimColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        bottomOpacity: 0.0,
-        elevation: 0.0,
-        title: Text(
-          "Group",
-          style: const TextStyle(color: Colors.black),
-        ),
-        leading: Builder(
-          builder: (context) => IconButton(
-            color: Colors.black,
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
-        ),
-        actions: <Widget>[
-          IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/addGroup');
-              },
-              icon: const Icon(
-                Icons.person_add_alt_1,
-                color: Color(0xFFB9C98C),
-              )),
-          IconButton(
-            icon: const Icon(
-              Icons.notifications_active,
-              color: Color(0xffB9C98C),
-            ),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        backgroundColor: Colors.white,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const Padding(
-              child: Text(
-                'SSAP calendar',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-              ),
-              padding: EdgeInsets.only(top: 40, left: 10),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(
-                Icons.account_circle,
-                color: Colors.black,
-              ),
-              title: const Text('Yoo Isae'),
-              onTap: () {},
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(
-                Icons.people,
-                color: Color(0xFFB9C98C),
-              ),
-              title: const Text(
-                'Group List',
-                style: TextStyle(color: Color(0xFFB9C98C)),
-              ),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.people,
-                color: Colors.black,
-              ),
-              title: const Text('My Friend List'),
-              onTap: () {},
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(
-                Icons.settings,
-                color: Color(0xFFB9C98C),
-              ),
-              title: const Text('Settings'),
-              onTap: () {},
-            ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Container(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: const Text(
-                    'Pubic/Private View',
-                    style: TextStyle(),
-                  )),
-              Container(
-                padding: const EdgeInsets.only(right: 16),
-                child: FlutterSwitch(
-                  onToggle: (val) {
-                    setState(() {
-                      status = !status;
-                    });
-                  },
-                  value: status,
-                  width: 40.0,
-                  height: 20.0,
-                  valueFontSize: 10.0,
-                  toggleSize: 15.0,
-                  borderRadius: 30.0,
-                  toggleColor: Colors.white,
-                  activeColor: const Color(0xFFB9C98C),
-                ),
-              ),
-            ]),
-            ListTile(
-              title: const Text('Sign out'),
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
-      body: Consumer<GroupProvider>(
-        builder: (context, group, _) => SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                margin: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    const Divider(
-                      color: Colors.grey,
-                    ),
-                    SizedBox(
-                        height:500,
-                        child: ListView.separated(
-                          padding: const EdgeInsets.all(8),
-                          itemCount: group.groups.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Dismissible(key: UniqueKey(), child: SizedBox(
-                              height: 50,
-                              child: Row(children:[TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ViewGroup(group: group.groups[index])));
-                                },
-                                child: Text(
-                                  "${group.groups[index].groupName}    (${group.groups[index].members.length})",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-
-
-
-                              ],
-
-                              ),
-                            ),
-                            );
-                          },
-                          separatorBuilder:
-                              (BuildContext context, int index) {
-                            return const Divider(color: Colors.grey,);
-                          },
-                        )),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      resizeToAvoidBottomInset: false,
-    );
-  }
-}
 
 class AddGroupSchedule extends StatefulWidget {
   const AddGroupSchedule({
@@ -578,15 +402,4 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
   }
 }
 
-class groupInfo {
-  groupInfo({required this.groupName, docId, members});
-  List<userInfo> members = [];
-  String docId = "";
-  String groupName;
-}
 
-class Schedule {
-  Schedule({required this.title, required this.dateTime});
-  String title;
-  String dateTime;
-}

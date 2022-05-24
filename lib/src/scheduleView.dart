@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         actions: [
           IconButton(
-              onPressed: () {},
+              onPressed: () {Navigator.pushNamed(context, '/Notification');},
               icon: const Icon(
                 Icons.notifications,
                 color: Color(0xFFB9C98C),

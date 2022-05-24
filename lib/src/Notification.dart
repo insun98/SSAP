@@ -5,6 +5,7 @@ import 'package:shrine/Provider/FriendProvider.dart';
 
 import '../Provider/GroupProvider.dart';
 import '../Provider/NotificationProvider.dart';
+import '../Provider/scheduleProvider.dart';
 
 
 class NotificationPage extends StatefulWidget {
@@ -183,25 +184,29 @@ class _NotificationPageState extends State<NotificationPage> {
                               height: 250,
                               child: ListView.builder(
                                 padding: const EdgeInsets.all(8),
-                                itemCount:  0,//notify.notificationInfo.Friend.length,
+                                itemCount:  notify.notificationInfo.Group.length,
                                 itemBuilder: (BuildContext context, int index)  {
-                               //   userInfo? user =   groupProvider.searchUser(notify.notificationInfo.Friend[index]);
-                                 // print("user: ${notify.notificationInfo.Friend[index]}");
+                                  Meeting meeting =   notify.setGroupPendingTime(notify.notificationInfo.Group[index]);
+                                  // print("user: ${notify.notificationInfo.Friend[index]}");
                                   return SizedBox(
                                     height: 50,
                                     child:   Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        ElevatedButton(
+                                        Expanded(child: SizedBox( child:Column(crossAxisAlignment: CrossAxisAlignment.start,children:[Text("${meeting.eventName}",style: TextStyle(color:Colors.black),),Text("${meeting.from.toString()}",style: TextStyle(color:Colors.black),),],),),
+                                        ),
+                                  ElevatedButton(
                                           child: const Text('accept'),
                                           style: ElevatedButton.styleFrom(primary: Color(0xffB9C98C)),
-                                          onPressed: () async {},
+                                          onPressed: ()  { notify.acceptMeeting(notify.notificationInfo.Group[index]);},
                                         ),
                                         SizedBox(width:30),
                                         ElevatedButton(
                                           child: const Text('deny'),
                                           style: ElevatedButton.styleFrom(primary: Color(0xffB9C98C)),
-                                          onPressed: () async {},
+                                          onPressed: ()  {notify.denyMeeting(notify.notificationInfo.Group[index]);},
+
+
                                         ),
                                         SizedBox(height:10),
                                       ],
@@ -226,18 +231,18 @@ class _NotificationPageState extends State<NotificationPage> {
                                 padding: const EdgeInsets.all(8),
                                 itemCount:  notify.notificationInfo.Friend.length,
                                 itemBuilder: (BuildContext context, int index)  {
-                                     userInfo? user =   groupProvider.searchUser(notify.notificationInfo.Friend[index]);
+                                     groupProvider.searchUser(notify.notificationInfo.Friend[index]);
                                   // print("user: ${notify.notificationInfo.Friend[index]}");
                                   return SizedBox(
                                     height: 50,
                                     child:   Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                       SizedBox( width:100,child:Text("${user?.name}"),),
+                                       SizedBox( width:100,child:Text("${groupProvider.singleUser.name}"),),
                                         ElevatedButton(
                                           child: const Text('accept'),
                                           style: ElevatedButton.styleFrom(primary: Color(0xffB9C98C)),
-                                          onPressed: () async {notify.addFriend(notify.notificationInfo.Friend[index]);notify.remove(notify.notificationInfo.Friend[index]);},
+                                          onPressed: () async {friendProvider.addFriend(notify.notificationInfo.Friend[index]);notify.remove(notify.notificationInfo.Friend[index]);},
                                         ),
                                         SizedBox(width:30),
                                         ElevatedButton(

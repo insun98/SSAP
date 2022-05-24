@@ -188,10 +188,7 @@ class RadioGroupWidget extends State<RadioGroup> {
               Icons.cancel,
               color: Colors.grey,
 
-
-          onPressed: () {Navigator.pushNamed(context,'/home');},
-
-        ),
+        ), onPressed: () {Navigator.pushNamed(context,'/home');},),
         actions: <Widget>[
           Container(
             padding: const EdgeInsets.all(10),
@@ -216,35 +213,9 @@ class RadioGroupWidget extends State<RadioGroup> {
 
 
             ),
-            onPressed: () {
-              Navigator.pushNamed(context, '/home');
-            },
-          ),
-          actions: <Widget>[
-            Container(
-              padding: const EdgeInsets.all(10),
-              child: ElevatedButton(
-                child: const Text('OK'),
-                style:
-                    ElevatedButton.styleFrom(primary: const Color(0xFFB9C98C)),
-                onPressed: () async {
-                  List<dynamic> members = [];
 
-                  for (var member in widget.groupMembers) {
-                    members.add(member.uid);
-                  }
-
-                  String groupDocId =
-                      await groupProvider.addGroup(members, _controller.text);
-                  print("gg${groupDocId}");
-
-                  groupInfo group = await groupProvider.setGroup(groupDocId);
-                  print(group.groupName);
-                  Navigator.pushNamed(context, '/viewGroup');
-                },
-              ),
-            ),
-          ],
+        ),
+        ],
         ),
         body: SafeArea(
           child: Center(

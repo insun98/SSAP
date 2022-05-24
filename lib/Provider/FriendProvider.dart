@@ -9,7 +9,14 @@ class FriendProvider extends ChangeNotifier {
     var val = []; //blank list for add elements which you want to delete
     val.add(notification);
     FirebaseFirestore.instance.collection("user").doc(
-        FirebaseAuth.instance.currentUser?.uid).update({
+        FirebaseAuth.instance.currentUser?.uid).set({
+
+      "Friend": FieldValue.arrayUnion(val)});
+     val = [];
+    val.add( FirebaseAuth.instance.currentUser?.uid);
+
+    FirebaseFirestore.instance.collection("user").doc(
+        notification).set({
 
       "Friend": FieldValue.arrayUnion(val)});
     notifyListeners();

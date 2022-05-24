@@ -14,7 +14,7 @@
 
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_switch/flutter_switch.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shrine/src/ViewGroup.dart';
 
@@ -77,76 +77,74 @@ class _AddGroupPageState extends State<AddGroupPage> {
       ),
       body: SafeArea(
         child: Consumer<GroupProvider>(
-          builder: (context, group, _) => SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height:30,),
-                  TextFormField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: Color(0xffE5E5E5),
-                      hintText: 'Search by Id',
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                          user = group.searchUserwithId(_controller.text)!;
-                      });
-                    },
+          builder: (context, group, _) => Container(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height:30,),
+                TextFormField(
+                  controller: _controller,
+                  decoration: const InputDecoration(
+                    filled: true,
+                    fillColor: Color(0xffE5E5E5),
+                    hintText: 'Search by Id',
                   ),
-                  TextButton(
-                    onPressed: () {
-                      _controller.clear();
-                      groupMembers.add(user);
-                      group.clear();
-                      user.name = "";
+                  onChanged: (value) {
+                    setState(() {
+                        user = group.searchingUser(_controller.text);
+                    });
+                  },
+                ),
+                TextButton(
+                  onPressed: () {
+                    _controller.clear();
+                    groupMembers.add(user);
+                    group.clear();
 
-                    },
-                    child:  user.name.isNotEmpty?Text(
-                      "${user.name}(${user.id})", style: TextStyle(color: Colors.black)):const Text(""),
 
-                    ),
-                  SizedBox(height:100),
+                  },
+                  child:  user.name.isNotEmpty?Text(
+                    "${user.name}(${user.id})", style: TextStyle(color: Colors.black)):const Text(""),
 
-              groupMembers.length>0? Text(' <'
-                      ' Added Members>', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold
-                  ),) :Text(""),
-                  SizedBox(
-                      height: 200,
-                      child: ListView.separated(
-                        padding: const EdgeInsets.all(8),
-                        itemCount: groupMembers.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return SizedBox(
-                            height: 30,
-                              child: Row(children:[
+                  ),
+                SizedBox(height:100),
 
-                                Text(
-                                "${groupMembers[index].name}(${groupMembers[index].id})",
-                                style: TextStyle(color: Colors.black),
+            groupMembers.length>0? Text(' <'
+                    ' Added Members>', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold
+                ),) :Text(""),
+                SizedBox(
+                    height: 200,
+                    child: ListView.separated(
+                      padding: const EdgeInsets.all(8),
+                      itemCount: groupMembers.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return SizedBox(
+                          height: 30,
+                            child: Row(children:[
 
+                              Text(
+                              "${groupMembers[index].name}(${groupMembers[index].id})",
+                              style: TextStyle(color: Colors.black),
+
+                          ),
+                          ],
                             ),
-                            ],
-                              ),
-                          );
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return const Divider();
-                        },
-                      )),
-                  // RadioGrou
-                  //           users: groupProvider.user,
-                  //         ),
-                ],
-              ),
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const Divider();
+                      },
+                    )),
+                // RadioGrou
+                //           users: groupProvider.user,
+                //         ),
+              ],
             ),
           ),
         ),
       ),
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
         ),
     );
   }
@@ -170,7 +168,8 @@ class RadioGroupWidget extends State<RadioGroup> {
   @override
   Widget build(BuildContext context) {
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
-    return Scaffold(
+    return Consumer<GroupProvider>(
+        builder: (context, group, _) => Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         bottomOpacity: 0.0,
@@ -250,6 +249,7 @@ class RadioGroupWidget extends State<RadioGroup> {
         ),
       ),
       resizeToAvoidBottomInset: false,
+        ),
     );
   }
 }

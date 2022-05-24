@@ -23,8 +23,6 @@ import '../Provider/GroupProvider.dart';
 import '../Provider/groupTime.dart';
 import '../Provider/scheduleProvider.dart';
 
-
-
 class AddGroupPage extends StatefulWidget {
   const AddGroupPage({Key? key}) : super(key: key);
 
@@ -36,154 +34,160 @@ class _AddGroupPageState extends State<AddGroupPage> {
   final _controller = TextEditingController();
   List<userInfo> groupMembers = [];
   userInfo user = userInfo(id: "", name: "", uid: "", image: "");
+
   @override
   Widget build(BuildContext context) {
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
     return Consumer<GroupProvider>(
-        builder: (context, group, _) =>Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        bottomOpacity: 0.0,
-        title: Text(
-          'Search Friends',
-          style: TextStyle(color: Colors.black),
-        ),
-        elevation: 0.0,
-
-        leading: IconButton(
-          icon: const Icon(
-            Icons.cancel,
-            color: Colors.grey,
+      builder: (context, group, _) => Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          bottomOpacity: 0.0,
+          title: Text(
+            'Search Friends',
+            style: TextStyle(color: Colors.black),
           ),
-          onPressed: () {Navigator.pop(context);},
-        ),
-        actions: <Widget>[
-          Container(
-            padding: const EdgeInsets.all(10),
-            child: ElevatedButton(
-              child: const Text('OK'),
-              style: ElevatedButton.styleFrom(primary: const Color(0xFFB9C98C)),
-              onPressed: () async {
-
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            RadioGroup(groupMembers: groupMembers)));
-              },
+          elevation: 0.0,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.cancel,
+              color: Colors.grey,
             ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-        ],
-      ),
-      body: SafeArea(
-        child: Consumer<GroupProvider>(
-          builder: (context, group, _) => Container(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height:30,),
-                TextFormField(
-                  controller: _controller,
-                  decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: Color(0xffE5E5E5),
-                    hintText: 'Search by Id',
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                        user = group.searchingUser(_controller.text);
-                    });
-                  },
+          actions: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(10),
+              child: ElevatedButton(
+                child: const Text('OK'),
+                style:
+                    ElevatedButton.styleFrom(primary: const Color(0xFFB9C98C)),
+                onPressed: () async {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              RadioGroup(groupMembers: groupMembers)));
+                },
+              ),
+            ),
+          ],
+        ),
+        body: SafeArea(
+          child: Consumer<GroupProvider>(
+            builder: (context, group, _) => SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 30,
+                    ),
+                    TextFormField(
+                      controller: _controller,
+                      decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Color(0xffE5E5E5),
+                        hintText: 'Search by Id',
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          user = group.searchingUser(_controller.text);
+                        });
+                      },
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        _controller.clear();
+                        groupMembers.add(user);
+                        group.clear();
+                      },
+                      child: user.name.isNotEmpty
+                          ? Text("${user.name}(${user.id})",
+                              style: TextStyle(color: Colors.black))
+                          : const Text(""),
+                    ),
+                    SizedBox(height: 100),
+
+                    groupMembers.length > 0
+                        ? Text(
+                            ' <'
+                            ' Added Members>',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          )
+                        : Text(""),
+                    SizedBox(
+                        height: 200,
+                        child: ListView.separated(
+                          padding: const EdgeInsets.all(8),
+                          itemCount: groupMembers.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return SizedBox(
+                              height: 30,
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "${groupMembers[index].name}(${groupMembers[index].id})",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const Divider();
+                          },
+                        )),
+                    // RadioGrou
+                    //           users: groupProvider.user,
+                    //         ),
+                  ],
                 ),
-                TextButton(
-                  onPressed: () {
-                    _controller.clear();
-                    groupMembers.add(user);
-                    group.clear();
-
-
-                  },
-                  child:  user.name.isNotEmpty?Text(
-                    "${user.name}(${user.id})", style: TextStyle(color: Colors.black)):const Text(""),
-
-                  ),
-                SizedBox(height:100),
-
-            groupMembers.length>0? Text(' <'
-                    ' Added Members>', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold
-                ),) :Text(""),
-                SizedBox(
-                    height: 200,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.all(8),
-                      itemCount: groupMembers.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return SizedBox(
-                          height: 30,
-                            child: Row(children:[
-
-                              Text(
-                              "${groupMembers[index].name}(${groupMembers[index].id})",
-                              style: TextStyle(color: Colors.black),
-
-                          ),
-                          ],
-                            ),
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const Divider();
-                      },
-                    )),
-                // RadioGrou
-                //           users: groupProvider.user,
-                //         ),
-              ],
+              ),
             ),
           ),
         ),
+        //resizeToAvoidBottomInset: false,
       ),
-      resizeToAvoidBottomInset: false,
-        ),
     );
   }
 }
 
 class RadioGroup extends StatefulWidget {
   final List<userInfo> groupMembers;
+
   const RadioGroup({required this.groupMembers});
 
   @override
   RadioGroupWidget createState() => RadioGroupWidget();
 }
 
-
 class RadioGroupWidget extends State<RadioGroup> {
-
- 
   final _controller = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
     return Consumer<GroupProvider>(
-        builder: (context, group, _) => Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        bottomOpacity: 0.0,
-
-        elevation: 0.0,
-        title: Text(
-          'Group Setting',
-          style: TextStyle(color: Colors.black),
-        ),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.cancel,
-            color: Colors.grey,
+      builder: (context, group, _) => Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          bottomOpacity: 0.0,
+          elevation: 0.0,
+          title: Text(
+            'Group Setting',
+            style: TextStyle(color: Colors.black),
           ),
+
+          leading: IconButton(
+            icon: const Icon(
+              Icons.cancel,
+              color: Colors.grey,
+
 
           onPressed: () {Navigator.pushNamed(context,'/home');},
 
@@ -210,51 +214,77 @@ class RadioGroupWidget extends State<RadioGroup> {
                 Navigator.pushNamed(context, '/viewGroup');
               },
 
+
             ),
+            onPressed: () {
+              Navigator.pushNamed(context, '/home');
+            },
           ),
-        ],
-      ),
-      body: SafeArea(
-        child: Center(
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: _controller,
-                  decoration: const InputDecoration(
-                    hintText: 'GroupName',
+          actions: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(10),
+              child: ElevatedButton(
+                child: const Text('OK'),
+                style:
+                    ElevatedButton.styleFrom(primary: const Color(0xFFB9C98C)),
+                onPressed: () async {
+                  List<dynamic> members = [];
+
+                  for (var member in widget.groupMembers) {
+                    members.add(member.uid);
+                  }
+
+                  String groupDocId =
+                      await groupProvider.addGroup(members, _controller.text);
+                  print("gg${groupDocId}");
+
+                  groupInfo group = await groupProvider.setGroup(groupDocId);
+                  print(group.groupName);
+                  Navigator.pushNamed(context, '/viewGroup');
+                },
+              ),
+            ),
+          ],
+        ),
+        body: SafeArea(
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      hintText: 'GroupName',
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                    height: 500,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.all(8),
-                      itemCount: widget.groupMembers.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return SizedBox(
-                          height: 30,
-                          child: Text(
-                              "${widget.groupMembers[index].name}(${widget.groupMembers[index].id})"),
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const Divider();
-                      },
-                    )),
-              ],
+                  const SizedBox(height: 20),
+                  SizedBox(
+                      height: 500,
+                      child: ListView.separated(
+                        padding: const EdgeInsets.all(8),
+                        itemCount: widget.groupMembers.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return SizedBox(
+                            height: 30,
+                            child: Text(
+                                "${widget.groupMembers[index].name}(${widget.groupMembers[index].id})"),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const Divider();
+                        },
+                      )),
+                ],
+              ),
             ),
           ),
         ),
+        resizeToAvoidBottomInset: false,
       ),
-      resizeToAvoidBottomInset: false,
-        ),
     );
   }
 }
-
-
 
 class AddGroupSchedule extends StatefulWidget {
   const AddGroupSchedule({
@@ -270,11 +300,13 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
   String _curType = 'type1';
   DateTime startTime = DateTime.parse(DateTime.now().toString());
   DateTime endTime =
-      DateTime.parse(DateTime.now().add(const Duration(hours: 2)).toString());
+      DateTime.parse(DateTime.now().add(const Duration(days: 3)).toString());
   final TextEditingController _controller1 = TextEditingController();
-  final TextEditingController _hourController = TextEditingController();
+  final TextEditingController _hourController = TextEditingController(text: '1');
   final TextEditingController _minController = TextEditingController();
-  List<userInfo> members = [];
+
+  //List<userInfo> members = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -291,8 +323,30 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
               color: Colors.black,
             )),
         actions: [
-          TextButton(onPressed: (){GroupTime().addGroupSchedule('groupId', Duration(minutes: int.parse(_hourController.text)), false, startTime, endTime, members);}, child: const Text('save')
-          ),],
+          TextButton(
+              onPressed: () async {
+                int info = await GroupTime().addGroupSchedule(
+                    context.read<GroupProvider>().singleGroup.docId,
+                    Duration(minutes: int.parse(_hourController.text)),
+                    false,
+                    startTime,
+                    endTime,
+                    context.read<GroupProvider>().singleGroup.member,
+                    _controller1.text.isEmpty?context.read<GroupProvider>().singleGroup.groupName : _controller1.text);
+                if (info == -1) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('이미 진행중인 미팅 선택이 있습니다.'),
+                  ));
+                  Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('add group schedule'),
+                  ));
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('save')),
+        ],
       ),
       body: Container(
         //width: MediaQuery.of(context).size.width - 10,
@@ -319,11 +373,21 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
                     children: [
                       Text('Duration: '),
                       Expanded(
-                          child: TextFormField(
-                        controller: _hourController,
-                        decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(left: 100)),
-                      )),
+                        child: TextField(
+                          keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
+                          controller: _hourController,
+                          decoration: const InputDecoration(
+                            //filled: true,
+                            //labelText: 'Price',
+                          ),
+                        ),
+                        // TextFormField(
+                        //   controller: _hourController,
+                        //   decoration: const InputDecoration(
+                        //       contentPadding: EdgeInsets.only(left: 100)),
+                        // ),
+                      ),
                       Text('mins'),
                     ],
                   ),
@@ -403,5 +467,3 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
     );
   }
 }
-
-

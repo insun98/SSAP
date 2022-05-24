@@ -77,74 +77,76 @@ class _AddGroupPageState extends State<AddGroupPage> {
       ),
       body: SafeArea(
         child: Consumer<GroupProvider>(
-          builder: (context, group, _) => Container(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height:30,),
-                TextFormField(
-                  controller: _controller,
-                  decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: Color(0xffE5E5E5),
-                    hintText: 'Search by Id',
+          builder: (context, group, _) => SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height:30,),
+                  TextFormField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Color(0xffE5E5E5),
+                      hintText: 'Search by Id',
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                          user = group.searchUserwithId(_controller.text)!;
+                      });
+                    },
                   ),
-                  onChanged: (value) {
-                    setState(() {
-                        user = group.searchUserwithId(_controller.text)!;
-                    });
-                  },
-                ),
-                TextButton(
-                  onPressed: () {
-                    _controller.clear();
-                    groupMembers.add(user);
-                    group.clear();
-                    user.name = "";
+                  TextButton(
+                    onPressed: () {
+                      _controller.clear();
+                      groupMembers.add(user);
+                      group.clear();
+                      user.name = "";
 
-                  },
-                  child:  user.name.isNotEmpty?Text(
-                    "${user.name}(${user.id})", style: TextStyle(color: Colors.black)):const Text(""),
+                    },
+                    child:  user.name.isNotEmpty?Text(
+                      "${user.name}(${user.id})", style: TextStyle(color: Colors.black)):const Text(""),
 
-                  ),
-                SizedBox(height:100),
+                    ),
+                  SizedBox(height:100),
 
-            groupMembers.length>0? Text(' <'
-                    ' Added Members>', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold
-                ),) :Text(""),
-                SizedBox(
-                    height: 200,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.all(8),
-                      itemCount: groupMembers.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return SizedBox(
-                          height: 30,
-                            child: Row(children:[
+              groupMembers.length>0? Text(' <'
+                      ' Added Members>', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold
+                  ),) :Text(""),
+                  SizedBox(
+                      height: 200,
+                      child: ListView.separated(
+                        padding: const EdgeInsets.all(8),
+                        itemCount: groupMembers.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return SizedBox(
+                            height: 30,
+                              child: Row(children:[
 
-                              Text(
-                              "${groupMembers[index].name}(${groupMembers[index].id})",
-                              style: TextStyle(color: Colors.black),
+                                Text(
+                                "${groupMembers[index].name}(${groupMembers[index].id})",
+                                style: TextStyle(color: Colors.black),
 
-                          ),
-                          ],
                             ),
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const Divider();
-                      },
-                    )),
-                // RadioGrou
-                //           users: groupProvider.user,
-                //         ),
-              ],
+                            ],
+                              ),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const Divider();
+                        },
+                      )),
+                  // RadioGrou
+                  //           users: groupProvider.user,
+                  //         ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
         ),
     );
   }

@@ -5,15 +5,15 @@ import 'package:flutter/cupertino.dart';
 import 'GroupProvider.dart';
 
 class FriendProvider extends ChangeNotifier {
-  Future<void> addFriend(userInfo friend) async {
-    CollectionReference product =
-    FirebaseFirestore.instance.collection('user');
+  Future<void> addFriend(String notification) async {
+    var val = []; //blank list for add elements which you want to delete
+    val.add(notification);
+    FirebaseFirestore.instance.collection("user").doc(
+        FirebaseAuth.instance.currentUser?.uid).update({
 
-    product
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection('Friend')
-        .doc(friend.Userid)
-        .set(<String, dynamic>{'name': friend.name,'id':friend.Userid});
+      "Friend": FieldValue.arrayUnion(val)});
+    notifyListeners();
   }
+
 
 }

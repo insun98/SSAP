@@ -14,9 +14,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:shrine/src/Friend.dart';
+import 'package:shrine/src/Notification.dart';
+import 'package:shrine/src/ViewGroup.dart';
+
 import 'package:shrine/src/addGroup.dart';
 import 'package:shrine/src/friendCalendar.dart';
 import 'package:shrine/src/friendlisttest.dart';
+import 'package:shrine/src/gruopList.dart';
+
 
 
 
@@ -50,6 +55,9 @@ class ShrineApp extends StatelessWidget {
         '/addFriend': (BuildContext context) => const AddFriend(),
         '/friendlist' : (BuildContext context) => const FriendLIst(),
         '/friendCalendar' : (BuildContext context) => const FriendCalendar(),
+        '/viewGroup' : (BuildContext context) => const ViewGroup(),
+        '/Notification' : (BuildContext context) => const NotificationPage(),
+
 
 
         // TODO: Make currentCategory field take _currentCategory (104)

@@ -54,7 +54,7 @@ class _ViewGroupState extends State<ViewGroup> {
               Icons.post_add_sharp,
               color: Color(0xffB9C98C),
             ),
-            onPressed: () {},
+            onPressed: () {Navigator.pushNamed(context, '/addgroupSchedule');},
           ),
           IconButton(
             icon: const Icon(

@@ -127,24 +127,7 @@ class GroupProvider extends ChangeNotifier {
     return user;
   }
 
-  userInfo? searchUser(String uid) {
-    for( var user in _users){
-      if(user.uid == uid)
-        return user;
-    }
-    return null;
 
-
-  }
-  userInfo? searchUserwithId(String userId) {
-    for( var user in _users){
-      if(user.id == userId)
-        return user;
-    }
-    return null;
-
-
-  }
 
   String addGroup(List<dynamic> members, String groupName) {
 

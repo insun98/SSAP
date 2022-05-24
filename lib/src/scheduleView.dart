@@ -487,6 +487,9 @@ class _DetailScheduleState extends State<DetailSchedule> {
           TextButton(
             onPressed: () {
               widget.schedule.eventName = _controller1.text;
+              widget.schedule.to = endTime;
+              widget.schedule.from = startTime;
+              widget.schedule.type = _curType;
               context.read<ScheduleProvider>().editSchedule(widget.schedule);
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

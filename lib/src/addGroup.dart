@@ -20,6 +20,10 @@ import 'package:shrine/src/ViewGroup.dart';
 
 import '../Provider/GroupProvider.dart';
 
+import '../Provider/groupTime.dart';
+import '../Provider/scheduleProvider.dart';
+
+
 
 class AddGroupPage extends StatefulWidget {
   const AddGroupPage({Key? key}) : super(key: key);
@@ -268,6 +272,7 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
   final TextEditingController _controller1 = TextEditingController();
   final TextEditingController _hourController = TextEditingController();
   final TextEditingController _minController = TextEditingController();
+  List<userInfo> members = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -284,8 +289,8 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
               color: Colors.black,
             )),
         actions: [
-
-        ],
+          TextButton(onPressed: (){GroupTime().addGroupSchedule('groupId', Duration(minutes: int.parse(_hourController.text)), false, startTime, endTime, members);}, child: const Text('save')
+          ),],
       ),
       body: Container(
         //width: MediaQuery.of(context).size.width - 10,

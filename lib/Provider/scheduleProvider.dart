@@ -35,9 +35,12 @@ class ScheduleProvider with ChangeNotifier {
             .listen((event) {
           mySchedules = [];
           for (final schedule in event.docs) {
+            if(schedule.data().isEmpty){
+              continue;
+            }
             mySchedules.add(
               Meeting(
-                eventName: schedule.data()['schedule name'] as String,
+                eventName: schedule.data()['schedule name'].toString(),
                 from: schedule.data()['schedule start'].toDate(),
                 to: schedule.data()['schedule end'].toDate(),
                 isAllDay: false,
@@ -94,6 +97,7 @@ class ScheduleProvider with ChangeNotifier {
       "schedule name": schedule.eventName,
       "schedule start": schedule.from,
       "schedule end": schedule.to,
+      "type" : schedule.type,
     });
     notifyListeners();
   }

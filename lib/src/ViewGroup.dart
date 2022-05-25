@@ -187,8 +187,6 @@ class _ViewGroupState extends State<ViewGroup> {
                                 return SizedBox(
                                   height: 30,
                                   child: Text(
-
-
                                     "${ group.singleUser.name}(${ group.singleUser.id})",
                                     style: const TextStyle(color: Colors.black),
                                   ),

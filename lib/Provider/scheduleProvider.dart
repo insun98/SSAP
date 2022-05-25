@@ -12,6 +12,8 @@ class ScheduleProvider with ChangeNotifier {
 
   final scheduleDB = FirebaseFirestore.instance
       .collection('schedules'); //.doc('yooisae').collection('schedules');
+  final groupDB = FirebaseFirestore.instance
+      .collection('group');
   DocumentSnapshot? curUserDB;
   String? curUserID;
 
@@ -35,7 +37,9 @@ class ScheduleProvider with ChangeNotifier {
             .listen((event) {
           mySchedules = [];
           for (final schedule in event.docs) {
-            if(schedule.data().isEmpty){
+            if (schedule
+                .data()
+                .isEmpty) {
               continue;
             }
             mySchedules.add(
@@ -45,11 +49,39 @@ class ScheduleProvider with ChangeNotifier {
                 to: schedule.data()['schedule end'].toDate(),
                 isAllDay: false,
                 docId: schedule.id,
-                background: schedule.data()['type'] == "Personal"?const Color(0xFFB9C98C) : const Color(0xFF123123),
+                background: schedule.data()['type'] == "Personal" ? const Color(
+                    0xFFB9C98C) : const Color(0xFF123123),
                 type: schedule.data()['type'],
                 //recurrenceRule: 'FREQ=DAILY;INTERVAL=7;COUNT=10'
               ),
             );
+            FirebaseFirestore.instance.collection('group').snapshots().listen((
+                event) {
+              FirebaseFirestore.instance.collection('group').where(
+                  'member', arrayContains: curUserID).get().then((value) {
+                for (final group in value.docs) {
+                  FirebaseFirestore.instance.collection('group').doc(group.id)
+                      .collection('confirmed').get()
+                      .then((value)
+                  {for (final schedule in value.docs) {
+                    mySchedules.add(
+                      Meeting(
+                        eventName: schedule.data()['schedule name'].toString(),
+                        from: schedule.data()['schedule start'].toDate(),
+                        to: schedule.data()['schedule end'].toDate(),
+                        isAllDay: false,
+                        docId: schedule.id,
+                        background: schedule.data()['type'] == "Personal" ? const Color(
+                            0xFFB9C98C) : const Color(0xFF123123),
+                        type: schedule.data()['type'],
+                        //recurrenceRule: 'FREQ=DAILY;INTERVAL=7;COUNT=10'
+                      ),
+                    );
+                  }});
+              }
+              });
+            });
+
             notifyListeners();
           }
         });
@@ -58,17 +90,15 @@ class ScheduleProvider with ChangeNotifier {
     });
   }
 
-  void addSchedule(
-    String name,
-    DateTime from,
-    DateTime to,
-    String type,
-  ) async {
+  void addSchedule(String name,
+      DateTime from,
+      DateTime to,
+      String type,) async {
     Map<String, dynamic> scheduleInfo = <String, dynamic>{
       "schedule name": name,
       "schedule start": Timestamp.fromDate(from),
       "schedule end": Timestamp.fromDate(to),
-      "type" : type,
+      "type": type,
     };
     mySchedules.add(
       Meeting(
@@ -77,7 +107,9 @@ class ScheduleProvider with ChangeNotifier {
           to: to,
           isAllDay: false,
           docId: '-',
-          background: type == 'Personal'?const Color(0xFFB9C98C) : const Color(0xFFB9C980),
+          background: type == 'Personal'
+              ? const Color(0xFFB9C98C)
+              : const Color(0xFFB9C980),
           type: type),
     );
 
@@ -97,7 +129,7 @@ class ScheduleProvider with ChangeNotifier {
       "schedule name": schedule.eventName,
       "schedule start": schedule.from,
       "schedule end": schedule.to,
-      "type" : schedule.type,
+      "type": schedule.type,
     });
     notifyListeners();
   }
@@ -139,7 +171,7 @@ class ScheduleProvider with ChangeNotifier {
         _friendSchedules.add(
           Meeting(
             eventName:
-                fprivate ? 'busy' : schedule.data()['schedule name'] as String,
+            fprivate ? 'busy' : schedule.data()['schedule name'] as String,
             from: schedule.data()['schedule start'].toDate(),
             to: schedule.data()['schedule end'].toDate(),
             isAllDay: false,

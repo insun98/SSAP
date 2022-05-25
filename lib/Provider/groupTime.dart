@@ -16,7 +16,7 @@ class GroupTime {
         .doc(groupId)
         .collection('pending').snapshots().first;
     print(info.size);
-    if(true){
+    if(false){
 
       return -1;
     }

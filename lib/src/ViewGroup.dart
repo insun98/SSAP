@@ -174,8 +174,9 @@ class _ViewGroupState extends State<ViewGroup> {
                             child: ListView.builder(
                               padding: const EdgeInsets.all(8),
                               itemCount:  groupProvider.singleGroup.member.length,
-                              itemBuilder: (BuildContext context, int index)  {
-                                 //userInfo user = groupProvider.searchUser(groupProvider.singleGroup.member[index]);
+ 
+
+                                
 
                                 return Consumer<GroupProvider>(
 
@@ -185,6 +186,7 @@ class _ViewGroupState extends State<ViewGroup> {
                                     "${groupProvider.members[index].name} (${groupProvider.members[index].id})",
                                     style: const TextStyle(color: Colors.black,fontSize: 17),
                                   ),
+
                                   ),
                                 );
                               },

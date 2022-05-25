@@ -9,6 +9,8 @@ class ScheduleProvider with ChangeNotifier {
   }
 
   List<Meeting> mySchedules = [];
+  List<Meeting> groupSchedules = [];
+  List<Meeting> allSchedules = [];
 
   final scheduleDB = FirebaseFirestore.instance
       .collection('schedules'); //.doc('yooisae').collection('schedules');
@@ -55,35 +57,45 @@ class ScheduleProvider with ChangeNotifier {
                 //recurrenceRule: 'FREQ=DAILY;INTERVAL=7;COUNT=10'
               ),
             );
-            FirebaseFirestore.instance.collection('group').snapshots().listen((
-                event) {
-              FirebaseFirestore.instance.collection('group').where(
-                  'member', arrayContains: curUserID).get().then((value) {
-                for (final group in value.docs) {
-                  FirebaseFirestore.instance.collection('group').doc(group.id)
-                      .collection('confirmed').get()
-                      .then((value)
-                  {for (final schedule in value.docs) {
-                    mySchedules.add(
-                      Meeting(
-                        eventName: schedule.data()['schedule name'].toString(),
-                        from: schedule.data()['schedule start'].toDate(),
-                        to: schedule.data()['schedule end'].toDate(),
-                        isAllDay: false,
-                        docId: schedule.id,
-                        background: schedule.data()['type'] == "Personal" ? const Color(
-                            0xFFB9C98C) : const Color(0xFF123123),
-                        type: schedule.data()['type'],
-                        //recurrenceRule: 'FREQ=DAILY;INTERVAL=7;COUNT=10'
-                      ),
-                    );
-                  }});
-              }
-              });
-            });
-
-            notifyListeners();
           }
+          FirebaseFirestore.instance.collection('group').snapshots().listen((
+              event) {
+            print('clear');
+
+            FirebaseFirestore.instance.collection('group').where(
+                'member', arrayContains: curUserID).get().then((value) async{
+              groupSchedules.clear();
+              for (final group in value.docs) {
+                print('group: ${group.id}');
+                await FirebaseFirestore.instance.collection('group').doc(group.id)
+                    .collection('confirmed').get()
+                    .then((value)
+                {for (final schedule in value.docs) {
+                  print('schedule: ${schedule.id}');
+                  if (schedule
+                      .data()
+                      .isEmpty) {
+                    continue;
+                  }
+                  groupSchedules.add(
+                    Meeting(
+                      eventName: schedule.data()['schedule name'].toString(),
+                      from: schedule.data()['schedule start'].toDate(),
+                      to: schedule.data()['schedule end'].toDate(),
+                      isAllDay: false,
+                      docId: schedule.id,
+                      background: schedule.data()['type'] == "Personal" ? const Color(
+                          0xFFB9C98C) : const Color(0xFF123123),
+                      type: schedule.data()['type'],
+                      //recurrenceRule: 'FREQ=DAILY;INTERVAL=7;COUNT=10'
+                    ),
+                  );
+                  notifyListeners();
+                }});
+              }
+            });
+          });
+          notifyListeners();
         });
         notifyListeners();
       }
@@ -202,7 +214,12 @@ class ScheduleProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<Meeting> get getSchedules => mySchedules;
+  List<Meeting> get getSchedules{
+    allSchedules.clear();
+    allSchedules.addAll(mySchedules);
+    allSchedules.addAll(groupSchedules);
+    return allSchedules;
+  }
 }
 
 class Meeting {

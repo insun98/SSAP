@@ -10,6 +10,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import '../firebase_options.dart';
 import '../src/addGroup.dart';
+import '../Provider/scheduleProvider.dart';
 
 class GroupProvider extends ChangeNotifier {
   GroupProvider() {
@@ -26,7 +27,12 @@ class GroupProvider extends ChangeNotifier {
   groupInfo get singleGroup  => _singleGroup;
   List<groupInfo> _groups = [];
   List<groupInfo> get groups => _groups;
-
+  List<userInfo> _members =[];
+  List<userInfo> get members => _members;
+  List<Meeting> _confirmedSchedules = [];
+  List<Meeting> get confirmedSchedules => _confirmedSchedules;
+  Meeting _pendingMeeting = Meeting(eventName: "", background:  const Color(0xFFB9C98C), docId: "", type: '', to: DateTime.now(), from: DateTime.now(), isAllDay: false);
+  Meeting get pendingMeeting => _pendingMeeting;
   StreamSubscription<QuerySnapshot>? _userSubscription;
   StreamSubscription<QuerySnapshot>? _groupSubscription;
   StreamSubscription<QuerySnapshot>? _groupMemeberSubscription;
@@ -88,25 +94,26 @@ class GroupProvider extends ChangeNotifier {
   });
   }
 
-  Future<void> searchUser(String uid) async{
-     for (var user in _users) {
-      if (user.uid == uid) {
-        _singleUser.name = user.name;
-        _singleUser.id = user.id;
-        notifyListeners();
-      }
-
-    }
-  }
-
-  userInfo searchUserwithId(String userId) {
-    for (var user in _users) {
-      if (user.id == userId) return user;
+userInfo searchUser(String uid) {
+  userInfo user= userInfo(name: "", id: "", image: "", uid: "");
+  FirebaseFirestore.instance
+      .collection('user')
+      .doc(uid)
+      .snapshots()
+      .listen((snapshot) {
+    if (snapshot.exists) {
+      user.name = snapshot.data()!['name'];
+      user.id = snapshot.data()!['id'];
+      user.uid = snapshot.data()!['uid'];
+      user.image = snapshot.data()!['image'];
     }
     notifyListeners();
-    return singleUser;
+  });
 
+  return user;
   }
+
+
 
   userInfo searchingUser(String userId) {
     userInfo user = userInfo(name: "", id: "", image: "", uid: "");
@@ -129,6 +136,7 @@ class GroupProvider extends ChangeNotifier {
 
 
 
+
   String addGroup(List<dynamic> members, String groupName) {
 
     String id = FirebaseFirestore.instance.collection('group').doc().id;
@@ -144,23 +152,76 @@ class GroupProvider extends ChangeNotifier {
     return id;
   }
 
-  groupInfo setGroup(String docId) {
+  groupInfo setGroup(String groupId) {
 
   FirebaseFirestore.instance
       .collection('group')
-      .doc(docId).snapshots()
+      .doc(groupId).snapshots()
       .listen((snapshot) {
     if (snapshot.data() != null) {
       singleGroup.groupName = snapshot.data()!['groupName'];
       singleGroup.member = snapshot.data()!['member'];
-      singleGroup.docId = docId;
+      singleGroup.docId = groupId;
 
 
+    }});
+    for(var member in singleGroup.member){
+      FirebaseFirestore.instance
+          .collection('user')
+              .doc(member).snapshots()
+              .listen((snapshot) {
+                members.add(userInfo(
+                  id: snapshot.data()!['id'],
+                    uid:snapshot.data()!['uid'],
+                  image: snapshot.data()!['image'],
+                  name: snapshot.data()!['name'],
+                ));
+
+
+      });
+      }
+  FirebaseFirestore.instance.collection("group").doc(
+      groupId).collection("pending").where('active',isEqualTo: true).snapshots().listen((snapshot) {
+    if( snapshot.docs.isNotEmpty) {
+      pendingMeeting.eventName=snapshot.docs[0].data()['schedule name'];
+      pendingMeeting.to= snapshot.docs[0].data()['schedule end'].toDate();
+      pendingMeeting.from=snapshot.docs[0].data()['schedule start'].toDate();
+      pendingMeeting.accept =snapshot.docs[0].data()['accept'].toDate();
     }
+
+    notifyListeners();
   });
-  notifyListeners();
-  return singleGroup;
-}
+  FirebaseFirestore.instance
+      .collection('group')
+      .doc(groupId)
+      .collection('confirmed')
+      .snapshots()
+      .listen((snapshot) {
+    _confirmedSchedules = [];
+
+    for (final document in snapshot.docs) {
+      _confirmedSchedules.add(
+        Meeting(
+            eventName: document.data()['schedule name'],
+            background:  const Color(0xFFB9C98C),
+            docId: document.id,
+            type: document.data()['type'],
+            to: document.data()['schedule end'],
+            from: document.data()['schedule start'],
+            isAllDay: false
+
+        ),
+      );
+    }
+    notifyListeners();
+  });
+
+return singleGroup;
+  }
+
+
+
+
   Future<void> deleteMember(String docId) async {
     var val = []; //blank list for add elements which you want to delete
     val.add(docId);

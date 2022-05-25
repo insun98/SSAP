@@ -16,10 +16,7 @@ class GroupTime {
         .doc(groupId)
         .collection('pending').snapshots().first;
     print(info.size);
-    if(true){
 
-      return -1;
-    }
     print('$groupId, $dur, $start, $end, $members');
     for (final member in members) {
       print(member);
@@ -211,6 +208,14 @@ class GroupTime {
         break;
       }
     }
+    var collection = await FirebaseFirestore.instance.collection('group').doc(groupId)
+        .get();
+    members= collection.data()!["member"];
+
+    for(var member in members){
+
+    }
+
     return 0;
   }
 

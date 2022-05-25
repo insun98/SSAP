@@ -19,13 +19,13 @@ class _GroupListState extends State<GroupList> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawerScrimColor: Colors.black,
-      appBar: AppBar(
+      appBar:AppBar(
         backgroundColor: Colors.transparent,
         bottomOpacity: 0.0,
         elevation: 0.0,
         title: Text(
-          "Group",
-          style: const TextStyle(color: Colors.black),
+          'Group',
+          style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         leading: Builder(
           builder: (context) => IconButton(
@@ -38,74 +38,13 @@ class _GroupListState extends State<GroupList> {
         ),
         actions: <Widget>[
           IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/addGroup');
-              },
-              icon: const Icon(
-                Icons.person_add_alt_1,
-                color: Color(0xFFB9C98C),
-              )),
-          PopupMenuButton<String>(
-            icon: Icon(Icons.notifications,  color: Color(0xFFB9C98C),),
-            onSelected: (String result) {
-              switch (result) {
-                case 'filter1':
-                  print('filter 1 clicked');
-                  break;
-                case 'filter2':
-                  print('filter 2 clicked');
-                  break;
-                case 'clearFilters':
-                  print('Clear filters');
-                  break;
-                default:
-              }
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
-                value: 'filter1',
-                child: Text('Filter 1'),
-              ),
-              const PopupMenuItem<String>(
-                value: 'filter2',
-                child: Text('Filter 2'),
-              ),
-              const PopupMenuItem<String>(
-                value: 'clearFilters',
-                child: Text('Clear filters'),
-              ),
-            ],
+            icon: const Icon(
+              Icons.notifications_active,
+              color: Color(0xffB9C98C),
+            ),
+            onPressed: () {Navigator.pushNamed(context, '/Notification');},
           ),
-          PopupMenuButton<String>(
-            onSelected: (String result) {
-              switch (result) {
-                case 'option1':
-                  print('option 1 clicked');
-                  break;
-                case 'option2':
-                  print('option 2 clicked');
-                  break;
-                case 'delete':
-                  print('I want to delete');
-                  break;
-                default:
-              }
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
-                value: 'option1',
-                child: Text('Option 1'),
-              ),
-              const PopupMenuItem<String>(
-                value: 'option2',
-                child: Text('Option 2'),
-              ),
-              const PopupMenuItem<String>(
-                value: 'delete',
-                child: Text('Delete'),
-              ),
-            ],
-          )
+
         ],
       ),
       drawer: Drawer(
@@ -224,8 +163,8 @@ class _GroupListState extends State<GroupList> {
                               height: 50,
                               child: Row(children:[TextButton(
                                 onPressed: ()  async {
-                                  groupInfo groupinfo = await group.setGroup(group.groups[index].docId);
-                                  print("group: ${groupinfo.groupName}, ${group.groups[index].docId}");
+                                 await group.setGroup(group.groups[index].docId);
+
                                   Navigator.pushNamed(context, '/viewGroup');
 
                                 },

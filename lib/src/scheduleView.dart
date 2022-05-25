@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
               icon: const Icon(
-                Icons.search,
+                Icons.person_add_alt_1,
                 color: Color(0xFFB9C98C),
               )),
           IconButton(
@@ -92,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
              
               icon: const Icon(
-                Icons.person_add_alt_1,
+                Icons.group_add,
                 color: Color(0xFFB9C98C),
               )),
         ],

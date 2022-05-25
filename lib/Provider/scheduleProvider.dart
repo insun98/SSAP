@@ -204,6 +204,6 @@ class Meeting {
   String type;
 
   String docId;
-
+  int accept =0;
 //String? recurrenceRule;
 }

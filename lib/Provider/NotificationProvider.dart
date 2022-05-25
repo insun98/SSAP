@@ -15,7 +15,7 @@ class NotificationProvider with ChangeNotifier {
   NotificationInfo _notificationInfo = NotificationInfo(Friend: [], Group: []);
 
   NotificationInfo get notificationInfo => _notificationInfo;
-  Meeting _pendingMeeting = Meeting(eventName: "",background: Colors.black,docId: "", type: '', to: DateTime.now(), from: DateTime.now(), isAllDay: false);
+  Meeting _pendingMeeting = Meeting(eventName: "",background:  const Color(0xFFB9C98C),docId: "", type: '', to: DateTime.now(), from: DateTime.now(), isAllDay: false);
   Meeting get pendingMeeting => _pendingMeeting;
   Future<void> init() async {
     FirebaseAuth.instance.userChanges().listen((user) {
@@ -103,18 +103,18 @@ class NotificationProvider with ChangeNotifier {
         .get();
         List<dynamic> members= collection.data()!["member"];
     print("member ${members.length}" );
-
+    member= members.length;
     var querySnapshots = await FirebaseFirestore.instance.collection("group").doc(
         groupId).collection('pending') .where('active',isEqualTo: true).get();
      int accept = await querySnapshots.docs[0].data()['accept'] + 1;
     print("accept ${accept}" );
     if (accept == member){
       //add schedule to all users
-      String id = FirebaseFirestore.instance.collection('group').doc().collection('confirmed').id;
+      print("good");
         await FirebaseFirestore.instance
             .collection("group")
             .doc(groupId)
-            .collection('confirmed').doc(id).set(<String, dynamic>{'schedule end': querySnapshots.docs[0].data()['schedule end'],'schedule start': querySnapshots.docs[0].data()['schedule start'],'schedule name':  querySnapshots.docs[0].data()['schedule name'], 'type':'Group'});
+            .collection('confirmed').doc().set(<String, dynamic>{'schedule end': querySnapshots.docs[0].data()['schedule end'],'schedule start': querySnapshots.docs[0].data()['schedule start'],'schedule name':  querySnapshots.docs[0].data()['schedule name'], 'type':'Group'});
 
     }else {
       await querySnapshots.docs[0].reference.update({'accept':accept});

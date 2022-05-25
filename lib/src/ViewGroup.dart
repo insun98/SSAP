@@ -21,8 +21,7 @@ class _ViewGroupState extends State<ViewGroup> {
 
   Widget build(BuildContext context) {
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
-    return Consumer<GroupProvider>(
-        builder: (context, group, _) =>Scaffold(
+    return Scaffold(
       drawerScrimColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -56,13 +55,7 @@ class _ViewGroupState extends State<ViewGroup> {
             ),
             onPressed: () {Navigator.pushNamed(context, '/addgroupSchedule');},
           ),
-          IconButton(
-            icon: const Icon(
-              Icons.person_add,
-              color: Color(0xffB9C98C),
-            ),
-            onPressed: () {},
-          ),
+
         ],
       ),
       drawer: Drawer(
@@ -180,17 +173,18 @@ class _ViewGroupState extends State<ViewGroup> {
                             height: 100,
                             child: ListView.builder(
                               padding: const EdgeInsets.all(8),
-                              itemCount:  group.singleGroup.member.length,
+                              itemCount:  groupProvider.singleGroup.member.length,
                               itemBuilder: (BuildContext context, int index)  {
-                                groupProvider.searchUser(group.singleGroup.member[index]);
-                                print("user: ${group.singleUser.name}");
-                                return SizedBox(
+                                 //userInfo user = groupProvider.searchUser(groupProvider.singleGroup.member[index]);
+
+                                return Consumer<GroupProvider>(
+
+                                  builder: (context, group, _)=>SizedBox(
                                   height: 30,
                                   child: Text(
-
-
-                                    "${ group.singleUser.name}(${ group.singleUser.id})",
-                                    style: const TextStyle(color: Colors.black),
+                                    "${groupProvider.members[index].name} (${groupProvider.members[index].id})",
+                                    style: const TextStyle(color: Colors.black,fontSize: 17),
+                                  ),
                                   ),
                                 );
                               },
@@ -205,12 +199,30 @@ class _ViewGroupState extends State<ViewGroup> {
                           endIndent: 8,
                           color: Colors.grey,
                         ),
+                        SizedBox(
+                            height: 100,
+                            child: ListView.builder(
+                              padding: const EdgeInsets.all(8),
+                              itemCount:  groupProvider.confirmedSchedules.length,
+                              itemBuilder: (BuildContext context, int index)  {
+                                return Consumer<GroupProvider>(
+
+                                  builder: (context, group, _)=>SizedBox(
+                                    height: 30,
+                                    child: Text(
+                                      "${groupProvider.confirmedSchedules[index].eventName} (${groupProvider.confirmedSchedules[index].from})",
+                                      style: const TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )),
                         const SizedBox(
                           height: 100,
                         ),
                         Text('Unconfirmed Meeting',
                             style: TextStyle(
-                                fontSize: 17, color: Colors.grey[600])),
+                                fontSize: 25, color: Colors.grey[600])),
                         const Divider(
                           height: 8,
                           thickness: 1,
@@ -218,16 +230,39 @@ class _ViewGroupState extends State<ViewGroup> {
                           endIndent: 8,
                           color: Colors.grey,
                         ),
+                        SizedBox(
+                          height: 30,
+                          child: Row(children:[Expanded(child: Text(
+                            "${groupProvider.pendingMeeting.eventName} (${groupProvider.pendingMeeting.from})",
+                            style: const TextStyle(color: Colors.black,fontSize: 15
+                            ),
+                          ),),
+                            Text(
+                              "vote ",
+                              style: const TextStyle(color: Color(0xFFB9C98C),fontSize: 17
+                              ),),
+                              Text(
+                                "${groupProvider.pendingMeeting.accept}",
+                                style: const TextStyle(color:Colors.black,fontSize: 17
+                                ),),
+                            SizedBox(width:10),
+                          ],
+                            ),
+
+                        ),
                       ],
-                    ))
-              ],
-            ),
-          ),
+                        ),
+
+                    ),
+          ],
+        ),
+        ),
+
         ),
       ),
 
       resizeToAvoidBottomInset: false,
-        ),
+
     );
   }
 }

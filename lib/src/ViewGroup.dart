@@ -174,8 +174,8 @@ class _ViewGroupState extends State<ViewGroup> {
                             child: ListView.builder(
                               padding: const EdgeInsets.all(8),
                               itemCount:  groupProvider.singleGroup.member.length,
- 
 
+                              itemBuilder: (BuildContext context, int index)  {
                                 
 
                                 return Consumer<GroupProvider>(

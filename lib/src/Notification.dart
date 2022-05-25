@@ -45,29 +45,7 @@ class _NotificationPageState extends State<NotificationPage> {
               },
             ),
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(
-                Icons.notifications_active,
-                color: Color(0xffB9C98C),
-              ),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(
-                Icons.post_add_sharp,
-                color: Color(0xffB9C98C),
-              ),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(
-                Icons.person_add,
-                color: Color(0xffB9C98C),
-              ),
-              onPressed: () {},
-            ),
-          ],
+
         ),
         drawer: Drawer(
           backgroundColor: Colors.white,

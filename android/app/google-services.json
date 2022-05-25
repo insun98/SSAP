@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "1024544576041",
+    "project_id": "ssap-82a4b",
+    "storage_bucket": "ssap-82a4b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1024544576041:android:b02544215735ba88d68238",
+        "android_client_info": {
+          "package_name": "com.example.calendar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1024544576041-7fqlalda2i9qmbdnvblj9miggbvbpsr7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApsC2V6BL6PszOh3tCgtYN2FXOUad5OGA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1024544576041-7fqlalda2i9qmbdnvblj9miggbvbpsr7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1024544576041-e48p37fqoujm3so4j1h3bi156h2dmj42.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.calendar"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1024544576041:android:8bb06f9b22ab6bf5d68238",
+        "android_client_info": {
+          "package_name": "com.example.ssap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1024544576041-7fqlalda2i9qmbdnvblj9miggbvbpsr7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApsC2V6BL6PszOh3tCgtYN2FXOUad5OGA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1024544576041-7fqlalda2i9qmbdnvblj9miggbvbpsr7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1024544576041-e48p37fqoujm3so4j1h3bi156h2dmj42.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.calendar"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

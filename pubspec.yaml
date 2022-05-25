@@ -1,0 +1,35 @@
+name: shrine
+description: Learn how to use Material for structure and layout.
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  intl: ^0.17.0
+  google_sign_in: ^5.3.1
+  cupertino_icons: ^1.0.3
+  shrine_images: ^2.0.1
+  firebase_core: ^1.16.0
+  cloud_firestore: ^3.1.14
+  provider: ^6.0.2
+  firebase_auth: ^3.3.17
+  image_picker: ^0.8.5+1
+  firebase_storage: ^10.2.15
+  firebase_database: ^9.0.13
+  syncfusion_flutter_calendar: ^19.4.56
+  date_time_picker: ^2.1.0
+  flutter_animated_dialog: ^2.0.1
+  flutter_switch: ^0.3.2
+  path_provider: ^2.0.10
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^1.0.0
+
+flutter:
+  # TODO: Insert Fonts (103)
+  uses-material-design: true
+
+    # TODO: Add slanted menu asset (104)

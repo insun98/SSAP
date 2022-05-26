@@ -213,7 +213,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                         ElevatedButton(
                                           child: const Text('deny'),
                                           style: ElevatedButton.styleFrom(primary: Color(0xffB9C98C)),
-                                          onPressed: ()  {notify.denyMeeting(notify.notificationInfo.Group[index]);},
+                                          onPressed: ()  {print("good"); notify.denyMeeting(notify.notificationInfo.Group[index]);},
 
 
                                         ),

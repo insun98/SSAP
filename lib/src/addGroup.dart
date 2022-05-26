@@ -20,7 +20,7 @@ class AddGroupPage extends StatefulWidget {
 class _AddGroupPageState extends State<AddGroupPage> {
   final _controller = TextEditingController();
   List<userInfo> groupMembers = [];
-  userInfo user = userInfo(id: "", name: "", uid: "", image: "");
+  userInfo user = userInfo(id: "", name: "", uid: "", image: "", Friend:[]);
 
   @override
   Widget build(BuildContext context) {

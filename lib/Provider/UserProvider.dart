@@ -209,20 +209,7 @@ class UserProvider extends ChangeNotifier {
   }
 }
 
-class userInfo {
-  userInfo(
-      {required this.name,
-        required this.uid,
-        required this.id,
-        required this.image,
-        required this.Friend});
 
-  String name;
-  String uid;
-  String id;
-  String image;
-  List<dynamic> Friend;
-}
 
 // class groupInfo {
 //   groupInfo(

@@ -14,7 +14,11 @@ class UserProvider extends ChangeNotifier {
   }
 
   userInfo _singleUser =
-      userInfo(name: "", uid: "", id: "", image: "", Friend: []);
+  userInfo(name: "",
+      uid: "",
+      id: "",
+      image: "",
+      Friend: []);
 
   userInfo get singleUser => _singleUser;
   List<userInfo> _users = [];
@@ -27,28 +31,22 @@ class UserProvider extends ChangeNotifier {
   // StreamSubscription<QuerySnapshot>? _userSubscription;
 
   Future<void> init() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
 
-  var snapshot = FirebaseFirestore.instance
-          .collection('user')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .get().then((value) =>   {
+
+    var snapshot = FirebaseFirestore.instance
+        .collection('user')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get().then((value) =>
+    {
       _singleUser.name = value.data()!['name'],
       _singleUser.id = value.data()!['id'],
       _singleUser.uid = value.data()!['uid'],
       _singleUser.image = value.data()!['image'],
       _singleUser.Friend = value.data()!['Friend']
-
-
-  });
-print( _singleUser.name);
-
-
-
-
+    });
+    print(_singleUser.name);
   }
+
 
   userInfo setFriend(String uid) {
 
@@ -56,16 +54,14 @@ print( _singleUser.name);
       FirebaseFirestore.instance
           .collection('user')
           .doc(friend)
-          .snapshots()
-          .listen((snapshot) {
-        _users.add(userInfo(
-          id: snapshot.data()!['id'],
-          uid: snapshot.data()!['uid'],
-          image: snapshot.data()!['image'],
-          name: snapshot.data()!['name'],
-          Friend: snapshot.data()!['Friend'],
+          .get().then((value) {  _users.add(userInfo(
+        id: value.data()!['id'],
+        uid: value.data()!['uid'],
+        image: value.data()!['image'],
+        name: value.data()!['name'],
+        Friend: value.data()!['Friend'],
 
-        ));
+      ));
       });
       notifyListeners();
     }

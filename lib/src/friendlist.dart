@@ -104,28 +104,8 @@ class _FriendLIstState extends State<FriendLIst> {
                 Icons.notifications,
                 color: Color(0xFFB9C98C),
               )),
-          IconButton(
-              onPressed: () {
-                setState(() {
-                  month = true;
-                  if (kDebugMode) {
-                    print(month);
-                  }
-                });
-              },
-              icon: const Icon(
-                Icons.search,
-                color: Color(0xFFB9C98C),
-              )),
-          IconButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AddGroupPage()));
-              },
-              icon: const Icon(
-                Icons.person_add_alt_1,
-                color: Color(0xFFB9C98C),
-              )),
+
+
         ],
       ),
       drawer: Drawer(

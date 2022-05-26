@@ -11,6 +11,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../firebase_options.dart';
 import '../src/addGroup.dart';
 import '../Provider/scheduleProvider.dart';
+import '../Provider/UserProvider.dart';
 
 class GroupProvider extends ChangeNotifier {
   GroupProvider() {
@@ -19,7 +20,7 @@ class GroupProvider extends ChangeNotifier {
   String _defaultImage = "";
   String value = "ASC";
   int userIndex = 0;
-  userInfo _singleUser = userInfo(name:"", uid:"", id: "", image:  "");
+  userInfo _singleUser = userInfo(name:"", uid:"", id: "", image:  "", Friend: []);
   userInfo get singleUser => _singleUser;
   List<userInfo> _users = [];
   List<userInfo> get users => _users;
@@ -84,6 +85,7 @@ class GroupProvider extends ChangeNotifier {
               id: document.data()['id'] as String,
               uid: document.data()["uid"],
               image: document.data()["image"],
+              Friend: document.data()["Friend"],
             ),
           );
         }
@@ -280,19 +282,6 @@ return singleGroup;
     final downloadUrl = await mountainsRef.getDownloadURL();
     return downloadUrl;
   }
-}
-
-class userInfo {
-  userInfo({
-    required this.name,
-    required this.uid,
-    required this.id,
-    required this.image,
-  });
-  String name;
-  String uid;
-  String id;
-  String image;
 }
 
 class groupInfo {

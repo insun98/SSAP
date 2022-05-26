@@ -5,7 +5,10 @@ import 'package:shrine/Provider/FriendProvider.dart';
 
 import '../Provider/GroupProvider.dart';
 import '../Provider/NotificationProvider.dart';
+import '../Provider/UserProvider.dart';
 import '../Provider/scheduleProvider.dart';
+import 'EditProfile.dart';
+import 'login.dart';
 
 
 class NotificationPage extends StatefulWidget {
@@ -25,6 +28,8 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     FriendProvider friendProvider = Provider.of<FriendProvider>(context);
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+
     return Consumer<NotificationProvider>(
       builder: (context, notify, _) =>Scaffold(
         drawerScrimColor: Colors.black,
@@ -33,7 +38,7 @@ class _NotificationPageState extends State<NotificationPage> {
           bottomOpacity: 0.0,
           elevation: 0.0,
           title: Text(
-         'Notification',
+            'Notification',
             style: const TextStyle(color: Colors.black),
           ),
           leading: Builder(
@@ -52,12 +57,12 @@ class _NotificationPageState extends State<NotificationPage> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
-              Padding(
-                child: TextButton(
-                  child: const Text('SSAP calendar', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15,color: Colors.black,),textAlign: TextAlign.left, ),
-                  onPressed: () => Navigator.pushNamed(context, '/home'),
+              const Padding(
+                child: Text(
+                  'SSAP calendar',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                 ),
-                padding: const EdgeInsets.only(top: 40, left: 10),
+                padding: EdgeInsets.only(top: 40, left: 10),
               ),
               const Divider(),
               ListTile(
@@ -65,8 +70,17 @@ class _NotificationPageState extends State<NotificationPage> {
                   Icons.account_circle,
                   color: Colors.black,
                 ),
-                title: Text(context.read<ScheduleProvider>().curUserName.toString()),
-                onTap: () {},
+                title: Text(
+                  userProvider.singleUser.name +
+                      "(" +
+                      userProvider.singleUser.id +
+                      ")",
+                  style: TextStyle(color: Colors.black),
+                ),
+                onTap: () {
+                  Navigator.pushNamed(context, '/home');
+
+                },
               ),
               const Divider(),
               ListTile(
@@ -86,7 +100,11 @@ class _NotificationPageState extends State<NotificationPage> {
                   color: Colors.black,
                 ),
                 title: const Text('My Friend List'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, '/friendlist');
+
+
+                },
               ),
               const Divider(),
               ListTile(
@@ -95,7 +113,13 @@ class _NotificationPageState extends State<NotificationPage> {
                   color: Color(0xFFB9C98C),
                 ),
                 title: const Text('Settings'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EditProfile()),
+                  );
+
+                },
               ),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Container(
@@ -125,7 +149,14 @@ class _NotificationPageState extends State<NotificationPage> {
               ]),
               ListTile(
                 title: const Text('Sign out'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginWidget()),
+                  );
+
+                },
               ),
             ],
           ),
@@ -173,7 +204,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                       children: [
                                         Expanded(child: SizedBox( child:Column(crossAxisAlignment: CrossAxisAlignment.start,children:[Text("${meeting.eventName}",style: TextStyle(color:Colors.black),),Text("${meeting.from.toString()}",style: TextStyle(color:Colors.black),),],),),
                                         ),
-                                  ElevatedButton(
+                                        ElevatedButton(
                                           child: const Text('accept'),
                                           style: ElevatedButton.styleFrom(primary: Color(0xffB9C98C)),
                                           onPressed: ()  { notify.acceptMeeting(notify.notificationInfo.Group[index]);},
@@ -209,14 +240,14 @@ class _NotificationPageState extends State<NotificationPage> {
                                 padding: const EdgeInsets.all(8),
                                 itemCount:  notify.notificationInfo.Friend.length,
                                 itemBuilder: (BuildContext context, int index)  {
-                                     groupProvider.searchUser(notify.notificationInfo.Friend[index]);
+                                  groupProvider.searchUser(notify.notificationInfo.Friend[index]);
                                   // print("user: ${notify.notificationInfo.Friend[index]}");
                                   return SizedBox(
                                     height: 50,
                                     child:   Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                       SizedBox( width:100,child:Text("${groupProvider.singleUser.name}"),),
+                                        SizedBox( width:100,child:Text("${groupProvider.singleUser.name}"),),
                                         ElevatedButton(
                                           child: const Text('accept'),
                                           style: ElevatedButton.styleFrom(primary: Color(0xffB9C98C)),

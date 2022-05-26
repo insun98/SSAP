@@ -1,11 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
-import 'package:shrine/Provider/scheduleProvider.dart';
 
 import '../Provider/GroupProvider.dart';
+import '../Provider/UserProvider.dart';
+import 'EditProfile.dart';
 import 'addGroup.dart';
+import 'login.dart';
 
 class ViewGroup extends StatefulWidget {
 
@@ -22,6 +23,8 @@ class _ViewGroupState extends State<ViewGroup> {
   @override
 
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+
     GroupProvider groupProvider = Provider.of<GroupProvider>(context);
     return Scaffold(
       drawerScrimColor: Colors.black,
@@ -65,12 +68,12 @@ class _ViewGroupState extends State<ViewGroup> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            Padding(
-              child: TextButton(
-                child: const Text('SSAP calendar', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15,color: Colors.black,),textAlign: TextAlign.left, ),
-                onPressed: () => Navigator.pushNamed(context, '/home'),
+            const Padding(
+              child: Text(
+                'SSAP calendar',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               ),
-              padding: const EdgeInsets.only(top: 40, left: 10),
+              padding: EdgeInsets.only(top: 40, left: 10),
             ),
             const Divider(),
             ListTile(
@@ -78,8 +81,17 @@ class _ViewGroupState extends State<ViewGroup> {
                 Icons.account_circle,
                 color: Colors.black,
               ),
-              title: Text(context.watch<ScheduleProvider>().curUserName.toString()),
-              onTap: () {},
+              title: Text(
+                userProvider.singleUser.name +
+                    "(" +
+                    userProvider.singleUser.id +
+                    ")",
+                style: TextStyle(color: Colors.black),
+              ),
+              onTap: () {
+                Navigator.pushNamed(context, '/home');
+
+              },
             ),
             const Divider(),
             ListTile(
@@ -99,7 +111,10 @@ class _ViewGroupState extends State<ViewGroup> {
                 color: Colors.black,
               ),
               title: const Text('My Friend List'),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/friendlist');
+
+              },
             ),
             const Divider(),
             ListTile(
@@ -108,7 +123,13 @@ class _ViewGroupState extends State<ViewGroup> {
                 color: Color(0xFFB9C98C),
               ),
               title: const Text('Settings'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EditProfile()),
+                );
+
+              },
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Container(
@@ -138,129 +159,134 @@ class _ViewGroupState extends State<ViewGroup> {
             ]),
             ListTile(
               title: const Text('Sign out'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginWidget()),
+                );
+              },
             ),
           ],
         ),
       ),
-       body:
+      body:
 
 
-        SafeArea(
+      SafeArea(
         child: Center(
           child: Container(
             padding: const EdgeInsets.all(10),
             child: Column(
               children: [
                 Container(
-                    margin: const EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        //List of Group Members
-                        Text('Member',
-                            style: TextStyle(
-                                fontSize: 17, color: Colors.grey[600])),
-                        const Divider(
-                          height: 8,
-                          thickness: 1,
-                          indent: 0,
-                          endIndent: 8,
-                          color: Colors.grey,
-                        ),
-                        SizedBox(
-                            height: 100,
-                            child: ListView.builder(
-                              padding: const EdgeInsets.all(8),
-                              itemCount:  groupProvider.singleGroup.member.length,
+                  margin: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      //List of Group Members
+                      Text('Member',
+                          style: TextStyle(
+                              fontSize: 17, color: Colors.grey[600])),
+                      const Divider(
+                        height: 8,
+                        thickness: 1,
+                        indent: 0,
+                        endIndent: 8,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(
+                          height: 100,
+                          child: ListView.builder(
+                            padding: const EdgeInsets.all(8),
+                            itemCount:  groupProvider.singleGroup.member.length,
 
-                              itemBuilder: (BuildContext context, int index)  {
-                                
+                            itemBuilder: (BuildContext context, int index)  {
 
-                                return Consumer<GroupProvider>(
 
-                                  builder: (context, group, _)=>SizedBox(
+                              return Consumer<GroupProvider>(
+
+                                builder: (context, group, _)=>SizedBox(
                                   height: 30,
                                   child: Text(
                                     "${groupProvider.members[index].name} (${groupProvider.members[index].id})",
                                     style: const TextStyle(color: Colors.black,fontSize: 17),
                                   ),
 
-                                  ),
-                                );
-                              },
-                            )),
-                        Text('Incoming Meeting',
-                            style: TextStyle(
-                                fontSize: 17, color: Colors.grey[600])),
-                        const Divider(
-                          height: 8,
-                          thickness: 1,
-                          indent: 0,
-                          endIndent: 8,
-                          color: Colors.grey,
-                        ),
-                        SizedBox(
-                            height: 100,
-                            child: ListView.builder(
-                              padding: const EdgeInsets.all(8),
-                              itemCount:  groupProvider.confirmedSchedules.length,
-                              itemBuilder: (BuildContext context, int index)  {
-                                return Consumer<GroupProvider>(
-
-                                  builder: (context, group, _)=>SizedBox(
-                                    height: 30,
-                                    child: Text(
-                                      "${groupProvider.confirmedSchedules[index].eventName} (${groupProvider.confirmedSchedules[index].from})",
-                                      style: const TextStyle(color: Colors.black),
-                                    ),
-                                  ),
-                                );
-                              },
-                            )),
-                        const SizedBox(
+                                ),
+                              );
+                            },
+                          )),
+                      Text('Incoming Meeting',
+                          style: TextStyle(
+                              fontSize: 17, color: Colors.grey[600])),
+                      const Divider(
+                        height: 8,
+                        thickness: 1,
+                        indent: 0,
+                        endIndent: 8,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(
                           height: 100,
-                        ),
-                        Text('Unconfirmed Meeting',
-                            style: TextStyle(
-                                fontSize: 25, color: Colors.grey[600])),
-                        const Divider(
-                          height: 8,
-                          thickness: 1,
-                          indent: 0,
-                          endIndent: 8,
-                          color: Colors.grey,
-                        ),
-                        SizedBox(
-                          height: 30,
-                          child: Row(children:[Expanded(child: Text(
-                            "${groupProvider.pendingMeeting.eventName} (${groupProvider.pendingMeeting.from})",
-                            style: const TextStyle(color: Colors.black,fontSize: 15
-                            ),
-                          ),),
-                            Text(
-                              "vote ",
-                              style: const TextStyle(color: Color(0xFFB9C98C),fontSize: 17
-                              ),),
-                              Text(
-                                "${groupProvider.pendingMeeting.accept}",
-                                style: const TextStyle(color:Colors.black,fontSize: 17
-                                ),),
-                            SizedBox(width:10),
-                          ],
-                            ),
+                          child: ListView.builder(
+                            padding: const EdgeInsets.all(8),
+                            itemCount:  groupProvider.confirmedSchedules.length,
+                            itemBuilder: (BuildContext context, int index)  {
+                              return Consumer<GroupProvider>(
 
-                        ),
-                      ],
+                                builder: (context, group, _)=>SizedBox(
+                                  height: 30,
+                                  child: Text(
+                                    "${groupProvider.confirmedSchedules[index].eventName} (${groupProvider.confirmedSchedules[index].from})",
+                                    style: const TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              );
+                            },
+                          )),
+                      const SizedBox(
+                        height: 100,
+                      ),
+                      Text('Unconfirmed Meeting',
+                          style: TextStyle(
+                              fontSize: 25, color: Colors.grey[600])),
+                      const Divider(
+                        height: 8,
+                        thickness: 1,
+                        indent: 0,
+                        endIndent: 8,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(
+                        height: 30,
+                        child: Row(children:[Expanded(child: Text(
+                          "${groupProvider.pendingMeeting.eventName} (${groupProvider.pendingMeeting.from})",
+                          style: const TextStyle(color: Colors.black,fontSize: 15
+                          ),
+                        ),),
+                          Text(
+                            "vote ",
+                            style: const TextStyle(color: Color(0xFFB9C98C),fontSize: 17
+                            ),),
+                          Text(
+                            "${groupProvider.pendingMeeting.accept}",
+                            style: const TextStyle(color:Colors.black,fontSize: 17
+                            ),),
+                          SizedBox(width:10),
+                        ],
                         ),
 
-                    ),
-          ],
-        ),
-        ),
+                      ),
+                    ],
+                  ),
+
+                ),
+              ],
+            ),
+          ),
 
         ),
       ),

@@ -20,8 +20,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:provider/provider.dart';
 
-
-
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
 
@@ -211,12 +209,8 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  Future<void> registerAccount(
-      String email,
-      String id,
-      String password,
-      String name,
-      void Function(FirebaseAuthException e) errorCallback) async {
+  Future<void> registerAccount(String email, String id, String password,
+      String name, void Function(FirebaseAuthException e) errorCallback) async {
     try {
       var credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -235,7 +229,7 @@ class _SignupPageState extends State<SignupPage> {
       'id': id,
       'password': password,
       'uid': FirebaseAuth.instance.currentUser!.uid,
+      'Friend': [],
     });
-
   }
 }

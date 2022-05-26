@@ -4,8 +4,10 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 
 import '../Provider/GroupProvider.dart';
-import '../Provider/scheduleProvider.dart';
+import '../Provider/UserProvider.dart';
+import 'EditProfile.dart';
 import 'ViewGroup.dart';
+import 'login.dart';
 
 class GroupList extends StatefulWidget {
   const GroupList({Key? key}) : super(key: key);
@@ -18,6 +20,8 @@ class _GroupListState extends State<GroupList> {
   bool status = false;
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       drawerScrimColor: Colors.black,
       appBar:AppBar(
@@ -53,12 +57,12 @@ class _GroupListState extends State<GroupList> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            Padding(
-              child: TextButton(
-                child: const Text('SSAP calendar', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15,color: Colors.black,),textAlign: TextAlign.left, ),
-                onPressed: () => Navigator.pushNamed(context, '/home'),
+            const Padding(
+              child: Text(
+                'SSAP calendar',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               ),
-              padding: const EdgeInsets.only(top: 40, left: 10),
+              padding: EdgeInsets.only(top: 40, left: 10),
             ),
             const Divider(),
             ListTile(
@@ -66,8 +70,11 @@ class _GroupListState extends State<GroupList> {
                 Icons.account_circle,
                 color: Colors.black,
               ),
-              title: Text(context.watch<ScheduleProvider>().curUserName.toString()),
-              onTap: () {},
+              title: Text(userProvider.singleUser.name+"("+userProvider.singleUser.id+")", style: TextStyle(color:Colors.black),),
+              onTap: () {
+                Navigator.pushNamed(context, '/home');
+
+              },
             ),
             const Divider(),
             ListTile(
@@ -79,7 +86,10 @@ class _GroupListState extends State<GroupList> {
                 'Group List',
                 style: TextStyle(color: Color(0xFFB9C98C)),
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/groupList');
+
+              },
             ),
             ListTile(
               leading: const Icon(
@@ -87,7 +97,10 @@ class _GroupListState extends State<GroupList> {
                 color: Colors.black,
               ),
               title: const Text('My Friend List'),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/friendlist');
+
+              },
             ),
             const Divider(),
             ListTile(
@@ -96,7 +109,13 @@ class _GroupListState extends State<GroupList> {
                 color: Color(0xFFB9C98C),
               ),
               title: const Text('Settings'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EditProfile()),
+                );
+
+              },
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Container(
@@ -126,7 +145,13 @@ class _GroupListState extends State<GroupList> {
             ]),
             ListTile(
               title: const Text('Sign out'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginWidget()),
+                );
+
+              },
             ),
           ],
         ),
@@ -161,26 +186,26 @@ class _GroupListState extends State<GroupList> {
 
                               },
                               child: SizedBox(
-                              height: 50,
-                              child: Row(children:[TextButton(
-                                onPressed: ()  async {
-                                 await group.setGroup(group.groups[index].docId);
+                                height: 50,
+                                child: Row(children:[TextButton(
+                                  onPressed: ()  async {
+                                    await group.setGroup(group.groups[index].docId);
 
-                                  Navigator.pushNamed(context, '/viewGroup');
+                                    Navigator.pushNamed(context, '/viewGroup');
 
-                                },
-                                child: Text(
-                                  "${group.groups[index].groupName}    (${group.groups[index].member.length})",
-                                  style: TextStyle(color: Colors.black),
+                                  },
+                                  child: Text(
+                                    "${group.groups[index].groupName}    (${group.groups[index].member.length})",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+
+
+
+                                ],
+
                                 ),
                               ),
-
-
-
-                              ],
-
-                              ),
-                            ),
                             );
                           },
                           separatorBuilder:

@@ -202,7 +202,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                     child:   Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Expanded(child: SizedBox( child:Column(crossAxisAlignment: CrossAxisAlignment.start,children:[Text("${meeting.eventName}",style: TextStyle(color:Colors.black),),Text("${meeting.from.toString()}",style: TextStyle(color:Colors.black),),],),),
+                                        Expanded(child: SizedBox( child: meeting.eventName != ""?Column(crossAxisAlignment: CrossAxisAlignment.start,children:[Text("${meeting.eventName}",style: TextStyle(color:Colors.black),),Text("${meeting.from.toString()}",style: TextStyle(color:Colors.black),),],) : Text(""),),
                                         ),
                                         ElevatedButton(
                                           child: const Text('accept'),

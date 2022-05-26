@@ -186,7 +186,7 @@ userInfo searchUser(String uid) {
       pendingMeeting.eventName=snapshot.docs[0].data()['schedule name'];
       pendingMeeting.to= snapshot.docs[0].data()['schedule end'].toDate();
       pendingMeeting.from=snapshot.docs[0].data()['schedule start'].toDate();
-      pendingMeeting.accept =snapshot.docs[0].data()['accept'].toDate();
+      pendingMeeting.accept =snapshot.docs[0].data()['accept'];
     }
 
     notifyListeners();

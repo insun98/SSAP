@@ -22,6 +22,7 @@ import 'Provider/FriendProvider.dart';
 import 'Provider/GroupProvider.dart';
 
 
+import 'Provider/UserProvider.dart';
 import 'Provider/scheduleProvider.dart';
 import 'app.dart';
 
@@ -45,6 +46,9 @@ class Myapp extends StatelessWidget {
             create: (_) => FriendProvider()),
         ChangeNotifierProvider<NotificationProvider>(
             create: (_) => NotificationProvider()),
+        ChangeNotifierProvider<UserProvider>(
+            create: (_) => UserProvider()),
+
 
       ],
       child: const ShrineApp(),

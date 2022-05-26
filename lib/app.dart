@@ -19,7 +19,7 @@ import 'package:shrine/src/ViewGroup.dart';
 
 import 'package:shrine/src/addGroup.dart';
 import 'package:shrine/src/friendCalendar.dart';
-import 'package:shrine/src/friendlisttest.dart';
+import 'package:shrine/src/friendlist.dart';
 import 'package:shrine/src/gruopList.dart';
 
 

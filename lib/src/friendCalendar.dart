@@ -4,9 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
+import 'package:shrine/src/scheduleView.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 //import 'package:ntp/ntp.dart';
+import '../Provider/UserProvider.dart';
 import '../Provider/scheduleProvider.dart';
+import 'EditProfile.dart';
+import 'login.dart';
 
 class FriendCalendar extends StatefulWidget {
   const FriendCalendar({Key? key,}) : super(key: key);
@@ -25,6 +29,7 @@ class _FriendCalendarState extends State<FriendCalendar> {
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
     meetings = context.watch<ScheduleProvider>().friendSchedules;
     return Scaffold(
       backgroundColor: Colors.white,
@@ -83,12 +88,12 @@ class _FriendCalendarState extends State<FriendCalendar> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            Padding(
-              child: TextButton(
-                child: const Text('SSAP calendar', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15,color: Colors.black,),textAlign: TextAlign.left, ),
-                onPressed: () => Navigator.pushNamed(context, '/home'),
+            const Padding(
+              child: Text(
+                'SSAP calendar',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               ),
-              padding: const EdgeInsets.only(top: 40, left: 10),
+              padding: EdgeInsets.only(top: 40, left: 10),
             ),
             const Divider(),
             ListTile(
@@ -96,8 +101,13 @@ class _FriendCalendarState extends State<FriendCalendar> {
                 Icons.account_circle,
                 color: Colors.black,
               ),
-              title: Text(context.watch<ScheduleProvider>().curUserName.toString()),
-              onTap: () {},
+              title: Text(userProvider.singleUser.name),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyHomePage()),
+                );
+              },
             ),
             const Divider(),
             ListTile(
@@ -109,7 +119,10 @@ class _FriendCalendarState extends State<FriendCalendar> {
                 'Group List',
                 style: TextStyle(color: Color(0xFFB9C98C)),
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/groupList');
+
+              },
             ),
             ListTile(
               leading: const Icon(
@@ -117,7 +130,10 @@ class _FriendCalendarState extends State<FriendCalendar> {
                 color: Colors.black,
               ),
               title: const Text('My Friend List'),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/friendlist');
+
+              },
             ),
             const Divider(),
             ListTile(
@@ -126,7 +142,13 @@ class _FriendCalendarState extends State<FriendCalendar> {
                 color: Color(0xFFB9C98C),
               ),
               title: const Text('Settings'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EditProfile()),
+                );
+
+              },
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Container(
@@ -154,7 +176,13 @@ class _FriendCalendarState extends State<FriendCalendar> {
             ]),
             ListTile(
               title: const Text('Sign out'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginWidget()),
+                );
+
+              },
             ),
           ],
         ),

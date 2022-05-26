@@ -1,17 +1,3 @@
-// Copyright 2018-present the Flutter authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +8,7 @@ import '../Provider/GroupProvider.dart';
 
 import '../Provider/groupTime.dart';
 import '../Provider/scheduleProvider.dart';
+import '../Provider/UserProvider.dart';
 
 class AddGroupPage extends StatefulWidget {
   const AddGroupPage({Key? key}) : super(key: key);
@@ -63,7 +50,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
               child: ElevatedButton(
                 child: const Text('OK'),
                 style:
-                    ElevatedButton.styleFrom(primary: const Color(0xFFB9C98C)),
+                ElevatedButton.styleFrom(primary: const Color(0xFFB9C98C)),
                 onPressed: () async {
                   Navigator.push(
                       context,
@@ -107,18 +94,18 @@ class _AddGroupPageState extends State<AddGroupPage> {
                       },
                       child: user.name.isNotEmpty
                           ? Text("${user.name}(${user.id})",
-                              style: TextStyle(color: Colors.black))
+                          style: TextStyle(color: Colors.black))
                           : const Text(""),
                     ),
                     SizedBox(height: 100),
 
                     groupMembers.length > 0
                         ? Text(
-                            ' <'
-                            ' Added Members>',
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          )
+                      ' <'
+                          ' Added Members>',
+                      style: TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                    )
                         : Text(""),
                     SizedBox(
                         height: 200,
@@ -188,34 +175,34 @@ class RadioGroupWidget extends State<RadioGroup> {
               Icons.cancel,
               color: Colors.grey,
 
-        ), onPressed: () {Navigator.pushNamed(context,'/home');},),
-        actions: <Widget>[
-          Container(
-            padding: const EdgeInsets.all(10),
-            child: ElevatedButton(
-              child: const Text('OK'),
-              style: ElevatedButton.styleFrom(primary: const Color(0xFFB9C98C)),
-              onPressed: () async {
-                List<dynamic> members = [];
+            ), onPressed: () {Navigator.pushNamed(context,'/home');},),
+          actions: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(10),
+              child: ElevatedButton(
+                child: const Text('OK'),
+                style: ElevatedButton.styleFrom(primary: const Color(0xFFB9C98C)),
+                onPressed: () async {
+                  List<dynamic> members = [];
 
-                for (var member in widget.groupMembers) {
-                  members.add(member.uid);
-                }
+                  for (var member in widget.groupMembers) {
+                    members.add(member.uid);
+                  }
 
-                String groupDocId = await groupProvider.addGroup(
-                    members, _controller.text);
-                print("gg${groupDocId}");
+                  String groupDocId = await groupProvider.addGroup(
+                      members, _controller.text);
+                  print("gg${groupDocId}");
 
-                 await groupProvider.setGroup(groupDocId);
+                  await groupProvider.setGroup(groupDocId);
 
-                Navigator.pushNamed(context, '/viewGroup');
-              },
+                  Navigator.pushNamed(context, '/viewGroup');
+                },
 
+
+              ),
 
             ),
-
-        ),
-        ],
+          ],
         ),
         body: SafeArea(
           child: Center(
@@ -271,7 +258,7 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
   String _curType = 'type1';
   DateTime startTime = DateTime.parse(DateTime.now().toString());
   DateTime endTime =
-      DateTime.parse(DateTime.now().add(const Duration(days: 3)).toString());
+  DateTime.parse(DateTime.now().add(const Duration(days: 3)).toString());
   final TextEditingController _controller1 = TextEditingController();
   final TextEditingController _hourController = TextEditingController(text: '1');
   final TextEditingController _minController = TextEditingController();
@@ -364,7 +351,7 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
                   ),
                 )),
             DateTimePicker(
-                //textAlign: TextAlign.center,
+              //textAlign: TextAlign.center,
                 type: DateTimePickerType.dateTimeSeparate,
                 dateMask: 'd MMM, yyyy',
                 //controller: _controller1,
@@ -383,15 +370,15 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
                 //   return true;
                 // },
                 onChanged: (val) => setState(() {
-                      startTime = DateTime.parse(val);
-                      print(startTime);
-                    }),
+                  startTime = DateTime.parse(val);
+                  print(startTime);
+                }),
                 validator: (val) {
                   //setState(() => _valueToValidate1 = val ?? '');
                   return null;
                 },
                 onSaved: (val) {} //setState(() => _valueSaved1 = val ?? ''),
-                ),
+            ),
             DateTimePicker(
                 enableInteractiveSelection: true,
                 type: DateTimePickerType.dateTimeSeparate,
@@ -413,25 +400,25 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
                 //   return true;
                 // },
                 onChanged: (val) => setState(() {
-                      //_valueChanged2 = val;
-                      endTime = DateTime.parse(val);
+                  //_valueChanged2 = val;
+                  endTime = DateTime.parse(val);
 
-                      // if(endTime.isBefore(startTime)){
-                      //   print('hi');
-                      //   _controller2.clear();
-                      //   //_controller2.text = _controller1.text;
-                      // }
-                      // else{
-                      //   _controller2 = TextEditingController(text: val);
-                      //   endTime = DateTime.parse(val);
-                      // }
-                    }),
+                  // if(endTime.isBefore(startTime)){
+                  //   print('hi');
+                  //   _controller2.clear();
+                  //   //_controller2.text = _controller1.text;
+                  // }
+                  // else{
+                  //   _controller2 = TextEditingController(text: val);
+                  //   endTime = DateTime.parse(val);
+                  // }
+                }),
                 validator: (val) {
                   //setState(() => _valueToValidate2 = val ?? '');
                   return null;
                 },
                 onSaved: (val) {} //=> setState(() => _valueSaved2 = val ?? ''),
-                ),
+            ),
           ],
         ),
       ),

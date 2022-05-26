@@ -81,7 +81,7 @@ class _AddFriendState extends State<AddFriend> {
           ),
         ),
       ),
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
     );
   }
 }

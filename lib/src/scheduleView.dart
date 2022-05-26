@@ -4,10 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
-import 'package:shrine/src/friendlisttest.dart';
+import 'package:shrine/src/friendlist.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 //import 'package:ntp/ntp.dart';
+import '../Provider/UserProvider.dart';
 import '../Provider/scheduleProvider.dart';
+import 'EditProfile.dart';
+import 'login.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -27,6 +30,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     //status = Provider.of<ScheduleProvider>(context).private;
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       drawerScrimColor: Colors.black,
@@ -90,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.pushNamed(context, '/addGroup');
               },
 
-             
+
               icon: const Icon(
                 Icons.group_add,
                 color: Color(0xFFB9C98C),
@@ -102,12 +107,12 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            Padding(
-              child: TextButton(
-                child: const Text('SSAP calendar', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15,color: Colors.black,),textAlign: TextAlign.left, ),
-                onPressed: () => Navigator.pushNamed(context, '/home'),
+            const Padding(
+              child: Text(
+                'SSAP calendar',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               ),
-              padding: const EdgeInsets.only(top: 40, left: 10),
+              padding: EdgeInsets.only(top: 40, left: 10),
             ),
             const Divider(),
             ListTile(
@@ -115,8 +120,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 Icons.account_circle,
                 color: Colors.black,
               ),
-              title: Text(context.watch<ScheduleProvider>().curUserName.toString()),
-              onTap: () {},
+              title: Text(
+                userProvider.singleUser.name +
+                    "(" +
+                    userProvider.singleUser.id +
+                    ")",
+                style: TextStyle(color: Colors.black),
+              ),
+              onTap: () {
+                Navigator.pushNamed(context, '/home');
+
+              },
             ),
             const Divider(),
             ListTile(
@@ -128,7 +142,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 'Group List',
                 style: TextStyle(color: Color(0xFFB9C98C)),
               ),
-              onTap: () {Navigator.pushNamed(context, '/groupList');},
+              onTap: () {
+                Navigator.pushNamed(context, '/groupList');},
             ),
             ListTile(
               leading: const Icon(
@@ -137,6 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               title: const Text('My Friend List'),
               onTap: () {
+                userProvider.setFriend(userProvider.singleUser.id);
                 Navigator.pushNamed(context, '/friendlist');
               },
             ),
@@ -147,7 +163,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Color(0xFFB9C98C),
               ),
               title: const Text('Settings'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EditProfile()),
+                );
+              },
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Container(
@@ -175,7 +196,13 @@ class _MyHomePageState extends State<MyHomePage> {
             ]),
             ListTile(
               title: const Text('Sign out'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginWidget()),
+                );
+
+              },
             ),
           ],
         ),
@@ -297,7 +324,7 @@ class _AddScheduleState extends State<AddSchedule> {
   String _curType = 'Personal';
   DateTime startTime = DateTime.parse(DateTime.now().toString());
   DateTime endTime =
-      DateTime.parse(DateTime.now().add(const Duration(hours: 2)).toString());
+  DateTime.parse(DateTime.now().add(const Duration(hours: 2)).toString());
   final TextEditingController _controller1 = TextEditingController();
 
   @override
@@ -371,7 +398,7 @@ class _AddScheduleState extends State<AddSchedule> {
                   contentPadding: EdgeInsets.only(left: 20)),
             ),
             DateTimePicker(
-                //textAlign: TextAlign.center,
+              //textAlign: TextAlign.center,
                 type: DateTimePickerType.dateTimeSeparate,
                 dateMask: 'd MMM, yyyy',
                 //controller: _controller1,
@@ -390,15 +417,15 @@ class _AddScheduleState extends State<AddSchedule> {
                 //   return true;
                 // },
                 onChanged: (val) => setState(() {
-                      startTime = DateTime.parse(val);
-                      print(startTime);
-                    }),
+                  startTime = DateTime.parse(val);
+                  print(startTime);
+                }),
                 validator: (val) {
                   //setState(() => _valueToValidate1 = val ?? '');
                   return null;
                 },
                 onSaved: (val) {} //setState(() => _valueSaved1 = val ?? ''),
-                ),
+            ),
             DateTimePicker(
                 enableInteractiveSelection: true,
                 type: DateTimePickerType.dateTimeSeparate,
@@ -420,25 +447,25 @@ class _AddScheduleState extends State<AddSchedule> {
                 //   return true;
                 // },
                 onChanged: (val) => setState(() {
-                      //_valueChanged2 = val;
-                      endTime = DateTime.parse(val);
+                  //_valueChanged2 = val;
+                  endTime = DateTime.parse(val);
 
-                      // if(endTime.isBefore(startTime)){
-                      //   print('hi');
-                      //   _controller2.clear();
-                      //   //_controller2.text = _controller1.text;
-                      // }
-                      // else{
-                      //   _controller2 = TextEditingController(text: val);
-                      //   endTime = DateTime.parse(val);
-                      // }
-                    }),
+                  // if(endTime.isBefore(startTime)){
+                  //   print('hi');
+                  //   _controller2.clear();
+                  //   //_controller2.text = _controller1.text;
+                  // }
+                  // else{
+                  //   _controller2 = TextEditingController(text: val);
+                  //   endTime = DateTime.parse(val);
+                  // }
+                }),
                 validator: (val) {
                   //setState(() => _valueToValidate2 = val ?? '');
                   return null;
                 },
                 onSaved: (val) {} //=> setState(() => _valueSaved2 = val ?? ''),
-                ),
+            ),
           ],
         ),
       ),
@@ -468,7 +495,7 @@ class _DetailScheduleState extends State<DetailSchedule> {
     startTime = widget.schedule.from;
     endTime = widget.schedule.to;
     TextEditingController _controller1 =
-        TextEditingController(text: widget.schedule.eventName);
+    TextEditingController(text: widget.schedule.eventName);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -556,7 +583,7 @@ class _DetailScheduleState extends State<DetailSchedule> {
                   contentPadding: EdgeInsets.only(left: 20)),
             ),
             DateTimePicker(
-                //textAlign: TextAlign.center,
+              //textAlign: TextAlign.center,
                 type: DateTimePickerType.dateTimeSeparate,
                 dateMask: 'd MMM, yyyy',
                 //controller: _controller1,
@@ -575,15 +602,15 @@ class _DetailScheduleState extends State<DetailSchedule> {
                 //   return true;
                 // },
                 onChanged: (val) => setState(() {
-                      startTime = DateTime.parse(val);
-                      print(startTime);
-                    }),
+                  startTime = DateTime.parse(val);
+                  print(startTime);
+                }),
                 validator: (val) {
                   //setState(() => _valueToValidate1 = val ?? '');
                   return null;
                 },
                 onSaved: (val) {} //setState(() => _valueSaved1 = val ?? ''),
-                ),
+            ),
             DateTimePicker(
                 enableInteractiveSelection: true,
                 type: DateTimePickerType.dateTimeSeparate,
@@ -605,25 +632,25 @@ class _DetailScheduleState extends State<DetailSchedule> {
                 //   return true;
                 // },
                 onChanged: (val) => setState(() {
-                      //_valueChanged2 = val;
-                      endTime = DateTime.parse(val);
+                  //_valueChanged2 = val;
+                  endTime = DateTime.parse(val);
 
-                      // if(endTime.isBefore(startTime)){
-                      //   print('hi');
-                      //   _controller2.clear();
-                      //   //_controller2.text = _controller1.text;
-                      // }
-                      // else{
-                      //   _controller2 = TextEditingController(text: val);
-                      //   endTime = DateTime.parse(val);
-                      // }
-                    }),
+                  // if(endTime.isBefore(startTime)){
+                  //   print('hi');
+                  //   _controller2.clear();
+                  //   //_controller2.text = _controller1.text;
+                  // }
+                  // else{
+                  //   _controller2 = TextEditingController(text: val);
+                  //   endTime = DateTime.parse(val);
+                  // }
+                }),
                 validator: (val) {
                   //setState(() => _valueToValidate2 = val ?? '');
                   return null;
                 },
                 onSaved: (val) {} //=> setState(() => _valueSaved2 = val ?? ''),
-                ),
+            ),
           ],
         ),
       ),

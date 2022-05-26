@@ -31,25 +31,23 @@ class UserProvider extends ChangeNotifier {
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    FirebaseAuth.instance.userChanges().listen((user) {
-      _userSubscription = FirebaseFirestore.instance
+  var snapshot = FirebaseFirestore.instance
           .collection('user')
           .doc(FirebaseAuth.instance.currentUser!.uid)
-          .snapshots()
-          .listen((snapshot) {
-        if (snapshot.exists) {
-          _singleUser.name = snapshot.data()!['name'];
-          _singleUser.id = snapshot.data()!['id'];
-          _singleUser.uid = snapshot.data()!['uid'];
-          _singleUser.image = snapshot.data()!['image'];
-          _singleUser.Friend = snapshot.data()!['Friend'];
-        }
-        print(_singleUser.name);
-        notifyListeners();
-      });
+          .get().then((value) =>   {
+      _singleUser.name = value.data()!['name'],
+      _singleUser.id = value.data()!['id'],
+      _singleUser.uid = value.data()!['uid'],
+      _singleUser.image = value.data()!['image'],
+      _singleUser.Friend = value.data()!['Friend']
 
-      notifyListeners();
-    });
+
+  });
+print( _singleUser.name);
+
+
+
+
   }
 
   userInfo setFriend(String uid) {
@@ -66,6 +64,7 @@ class UserProvider extends ChangeNotifier {
           image: snapshot.data()!['image'],
           name: snapshot.data()!['name'],
           Friend: snapshot.data()!['Friend'],
+
         ));
       });
       notifyListeners();

@@ -209,7 +209,7 @@ class _ViewGroupState extends State<ViewGroup> {
                               return Consumer<GroupProvider>(
 
                                 builder: (context, group, _)=>SizedBox(
-                                  height: 30,
+                                  height: 20,
                                   child: Text(
                                     "${groupProvider.members[index].name} (${groupProvider.members[index].id})",
                                     style: const TextStyle(color: Colors.black,fontSize: 17),

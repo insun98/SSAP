@@ -204,19 +204,19 @@ class _NotificationPageState extends State<NotificationPage> {
                                       children: [
                                         Expanded(child: SizedBox( child: meeting.eventName != ""?Column(crossAxisAlignment: CrossAxisAlignment.start,children:[Text("${meeting.eventName}",style: TextStyle(color:Colors.black),),Text("${meeting.from.toString()}",style: TextStyle(color:Colors.black),),],) : Text(""),),
                                         ),
-                                        ElevatedButton(
+                                        meeting.eventName != "" ?ElevatedButton(
                                           child: const Text('accept'),
                                           style: ElevatedButton.styleFrom(primary: Color(0xffB9C98C)),
-                                          onPressed: ()  { notify.acceptMeeting(notify.notificationInfo.Group[index]);},
-                                        ),
+                                          onPressed: () async { notify.acceptMeeting(notify.notificationInfo.Group[index]);},
+                                        ):Text(""),
                                         SizedBox(width:30),
-                                        ElevatedButton(
+                                        meeting.eventName != ""? ElevatedButton(
                                           child: const Text('deny'),
                                           style: ElevatedButton.styleFrom(primary: Color(0xffB9C98C)),
-                                          onPressed: ()  {print("good"); notify.denyMeeting(notify.notificationInfo.Group[index]);},
+                                          onPressed: ()  async {print("good"); notify.denyMeeting(notify.notificationInfo.Group[index]);},
 
 
-                                        ),
+                                        ):Text(""),
                                         SizedBox(height:10),
                                       ],
 

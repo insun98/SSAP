@@ -371,7 +371,7 @@ class _FriendLIstState extends State<FriendLIst> {
                               context
                                   .read<ScheduleProvider>()
                                   .getFriendSchedules(
-                                      user.singleUser.Friend[index].uid);
+                                      user.singleUser.Friend[index]);
                               //  's2MVJDiwX7heYDR5xiD07mi6AKC2'
                               Navigator.pushNamed(context, '/friendCalendar');
 

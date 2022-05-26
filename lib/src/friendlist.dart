@@ -296,7 +296,7 @@ class _FriendLIstState extends State<FriendLIst> {
       //   ),
       // ),
       //   resizeToAvoidBottomInset: true,
-      SingleChildScrollView(child:SafeArea(
+      SafeArea(
         child: Consumer<UserProvider>(
           builder: (context, user, _) => Container(
             padding: const EdgeInsets.all(10),
@@ -348,12 +348,12 @@ class _FriendLIstState extends State<FriendLIst> {
                     Text(
                       "Friends ${user.singleUser.Friend.length}",
 
-                      style: TextStyle(color: Colors.grey, fontSize: 15),
+                      style: const TextStyle(color: Colors.grey, fontSize: 15),
                     ),
                   ],
                 ),
-                SizedBox(
-                    height: 700,
+                Expanded(
+                    //height: 700,
                     child: ListView.separated(
                       padding: const EdgeInsets.all(8),
                       itemCount: user.users.length,
@@ -413,9 +413,9 @@ class _FriendLIstState extends State<FriendLIst> {
             ),
           ),
         ),
-      ),),
+      ),
 
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       // Container(
       //   child: Column(
       //     children: [

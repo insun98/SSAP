@@ -603,6 +603,7 @@ class _DetailScheduleState extends State<DetailSchedule> {
                 // },
                 onChanged: (val) => setState(() {
                   startTime = DateTime.parse(val);
+                  widget.schedule.from = startTime;
                   print(startTime);
                 }),
                 validator: (val) {
@@ -634,7 +635,7 @@ class _DetailScheduleState extends State<DetailSchedule> {
                 onChanged: (val) => setState(() {
                   //_valueChanged2 = val;
                   endTime = DateTime.parse(val);
-
+                  widget.schedule.to = endTime;
                   // if(endTime.isBefore(startTime)){
                   //   print('hi');
                   //   _controller2.clear();

@@ -9,19 +9,30 @@ class ScheduleProvider with ChangeNotifier {
   }
 
   List<Meeting> mySchedules = [];
+  List<Meeting> groupSchedules = [];
+  List<Meeting> allSchedules = [];
 
   final scheduleDB = FirebaseFirestore.instance
       .collection('schedules'); //.doc('yooisae').collection('schedules');
-  final groupDB = FirebaseFirestore.instance
-      .collection('group');
+  final groupDB = FirebaseFirestore.instance.collection('group');
   DocumentSnapshot? curUserDB;
   String? curUserID;
+  String? curUserName;
 
   Future<void> init() async {
     FirebaseAuth.instance.userChanges().listen((user) async {
       if (user != null) {
         curUserID = user.uid;
-        print(curUserID);
+        FirebaseFirestore.instance
+            .collection('user')
+            .doc(curUserID)
+            .get()
+            .then((value) {
+          curUserName = value.data()!['name'].toString();
+          //print("*******************************$curUserName***************************");
+        });
+
+        notifyListeners();
         curUserDB = await scheduleDB.doc(curUserID).get();
         if (!curUserDB!.exists) {
           await scheduleDB.doc(user.uid).set({"private": true});
@@ -37,9 +48,7 @@ class ScheduleProvider with ChangeNotifier {
             .listen((event) {
           mySchedules = [];
           for (final schedule in event.docs) {
-            if (schedule
-                .data()
-                .isEmpty) {
+            if (schedule.data().isEmpty) {
               continue;
             }
             mySchedules.add(
@@ -49,51 +58,73 @@ class ScheduleProvider with ChangeNotifier {
                 to: schedule.data()['schedule end'].toDate(),
                 isAllDay: false,
                 docId: schedule.id,
-                background: schedule.data()['type'] == "Personal" ? const Color(
-                    0xFFB9C98C) : const Color(0xFF123123),
+                background: schedule.data()['type'] == "Personal"
+                    ? const Color(0xFFB9C98C)
+                    : const Color(0xFF123123),
                 type: schedule.data()['type'],
                 //recurrenceRule: 'FREQ=DAILY;INTERVAL=7;COUNT=10'
               ),
             );
-            FirebaseFirestore.instance.collection('group').snapshots().listen((
-                event) {
-              FirebaseFirestore.instance.collection('group').where(
-                  'member', arrayContains: curUserID).get().then((value) {
-                for (final group in value.docs) {
-                  FirebaseFirestore.instance.collection('group').doc(group.id)
-                      .collection('confirmed').get()
-                      .then((value)
-                  {for (final schedule in value.docs) {
-                    mySchedules.add(
+          }
+          FirebaseFirestore.instance
+              .collection('group')
+              .snapshots()
+              .listen((event) {
+            print('clear');
+
+            FirebaseFirestore.instance
+                .collection('group')
+                .where('member', arrayContains: curUserID)
+                .get()
+                .then((value) async {
+              //groupSchedules.clear();
+              for (final group in value.docs) {
+                print('group: ${group.id}');
+                await FirebaseFirestore.instance
+                    .collection('group')
+                    .doc(group.id)
+                    .collection('confirmed')
+                    .snapshots()
+                    .listen((value) {
+                  groupSchedules.clear();
+                  for (final schedule in value.docs) {
+                    print('schedule: ${schedule.id}');
+                    if (schedule.data().isEmpty) {
+                      continue;
+                    }
+                    groupSchedules.add(
                       Meeting(
                         eventName: schedule.data()['schedule name'].toString(),
                         from: schedule.data()['schedule start'].toDate(),
                         to: schedule.data()['schedule end'].toDate(),
                         isAllDay: false,
                         docId: schedule.id,
-                        background: schedule.data()['type'] == "Personal" ? const Color(
-                            0xFFB9C98C) : const Color(0xFF123123),
+                        background: schedule.data()['type'] == "Personal"
+                            ? const Color(0xFFB9C98C)
+                            : const Color(0xFF123123),
                         type: schedule.data()['type'],
                         //recurrenceRule: 'FREQ=DAILY;INTERVAL=7;COUNT=10'
                       ),
                     );
-                  }});
+                    notifyListeners();
+                  }
+                });
               }
-              });
             });
-
-            notifyListeners();
-          }
+          });
+          notifyListeners();
         });
         notifyListeners();
       }
     });
   }
 
-  void addSchedule(String name,
-      DateTime from,
-      DateTime to,
-      String type,) async {
+  void addSchedule(
+    String name,
+    DateTime from,
+    DateTime to,
+    String type,
+  ) async {
     Map<String, dynamic> scheduleInfo = <String, dynamic>{
       "schedule name": name,
       "schedule start": Timestamp.fromDate(from),
@@ -171,7 +202,7 @@ class ScheduleProvider with ChangeNotifier {
         _friendSchedules.add(
           Meeting(
             eventName:
-            fprivate ? 'busy' : schedule.data()['schedule name'] as String,
+                fprivate ? 'busy' : schedule.data()['schedule name'] as String,
             from: schedule.data()['schedule start'].toDate(),
             to: schedule.data()['schedule end'].toDate(),
             isAllDay: false,
@@ -202,7 +233,12 @@ class ScheduleProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<Meeting> get getSchedules => mySchedules;
+  List<Meeting> get getSchedules {
+    allSchedules.clear();
+    allSchedules.addAll(mySchedules);
+    allSchedules.addAll(groupSchedules);
+    return allSchedules;
+  }
 }
 
 class Meeting {
@@ -236,6 +272,6 @@ class Meeting {
   String type;
 
   String docId;
-  int accept =0;
+  int accept = 0;
 //String? recurrenceRule;
 }

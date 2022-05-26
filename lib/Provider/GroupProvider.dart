@@ -97,7 +97,7 @@ class GroupProvider extends ChangeNotifier {
   }
 
 userInfo searchUser(String uid) {
-  userInfo user= userInfo(name: "", id: "", image: "", uid: "");
+  userInfo user= userInfo(name: "", id: "", image: "", uid: "", Friend: []);
   FirebaseFirestore.instance
       .collection('user')
       .doc(uid)
@@ -108,6 +108,8 @@ userInfo searchUser(String uid) {
       user.id = snapshot.data()!['id'];
       user.uid = snapshot.data()!['uid'];
       user.image = snapshot.data()!['image'];
+
+      user.Friend = snapshot.data()!['Friend'];
     }
     notifyListeners();
   });
@@ -118,7 +120,7 @@ userInfo searchUser(String uid) {
 
 
   userInfo searchingUser(String userId) {
-    userInfo user = userInfo(name: "", id: "", image: "", uid: "");
+    userInfo user = userInfo(name: "", id: "", image: "", uid: "", Friend:[]);
      FirebaseFirestore.instance
         .collection('user')
         .where('id', isEqualTo: userId)
@@ -177,6 +179,7 @@ userInfo searchUser(String uid) {
                     uid:snapshot.data()!['uid'],
                   image: snapshot.data()!['image'],
                   name: snapshot.data()!['name'],
+                  Friend:snapshot.data()!['Friend'],
                 ));
 
 
@@ -282,6 +285,20 @@ return singleGroup;
     final downloadUrl = await mountainsRef.getDownloadURL();
     return downloadUrl;
   }
+}
+class userInfo {
+  userInfo(
+      {required this.name,
+        required this.uid,
+        required this.id,
+        required this.image,
+        required this.Friend});
+
+  String name;
+  String uid;
+  String id;
+  String image;
+  List<dynamic> Friend;
 }
 
 class groupInfo {

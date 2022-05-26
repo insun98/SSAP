@@ -19,7 +19,7 @@ class _AddFriendState extends State<AddFriend> {
 
   String name = "";
   List<userInfo> foundUsers = [];
-  userInfo user = userInfo(id: "", name: "", uid: "", image: "");
+  userInfo user = userInfo(id: "", name: "", uid: "", image: "", Friend:[]);
   @override
   Widget build(BuildContext context) {
     FriendProvider friendProvider = Provider.of<FriendProvider>(context);

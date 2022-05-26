@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
+import 'package:shrine/Provider/scheduleProvider.dart';
 
 import '../Provider/GroupProvider.dart';
 import 'addGroup.dart';
@@ -63,12 +65,12 @@ class _ViewGroupState extends State<ViewGroup> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            const Padding(
-              child: Text(
-                'SSAP calendar',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            Padding(
+              child: TextButton(
+                child: const Text('SSAP calendar', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15,color: Colors.black,),textAlign: TextAlign.left, ),
+                onPressed: () => Navigator.pushNamed(context, '/home'),
               ),
-              padding: EdgeInsets.only(top: 40, left: 10),
+              padding: const EdgeInsets.only(top: 40, left: 10),
             ),
             const Divider(),
             ListTile(
@@ -76,7 +78,7 @@ class _ViewGroupState extends State<ViewGroup> {
                 Icons.account_circle,
                 color: Colors.black,
               ),
-              title: const Text('Yoo Isae'),
+              title: Text(context.watch<ScheduleProvider>().curUserName.toString()),
               onTap: () {},
             ),
             const Divider(),

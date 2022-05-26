@@ -52,12 +52,12 @@ class _NotificationPageState extends State<NotificationPage> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
-              const Padding(
-                child: Text(
-                  'SSAP calendar',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              Padding(
+                child: TextButton(
+                  child: const Text('SSAP calendar', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15,color: Colors.black,),textAlign: TextAlign.left, ),
+                  onPressed: () => Navigator.pushNamed(context, '/home'),
                 ),
-                padding: EdgeInsets.only(top: 40, left: 10),
+                padding: const EdgeInsets.only(top: 40, left: 10),
               ),
               const Divider(),
               ListTile(
@@ -65,7 +65,7 @@ class _NotificationPageState extends State<NotificationPage> {
                   Icons.account_circle,
                   color: Colors.black,
                 ),
-                title: const Text('Yoo Isae'),
+                title: Text(context.read<ScheduleProvider>().curUserName.toString()),
                 onTap: () {},
               ),
               const Divider(),

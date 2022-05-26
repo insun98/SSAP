@@ -208,11 +208,12 @@ class GroupTime {
       }
       int i = 1;
       for (final info in result) {
+        print('store');
         Map<String, dynamic> scheduleInfo = <String, dynamic>{
           "schedule name": scheduleName,
           "schedule start": info.startTime,
           "schedule end": info.endTime,
-          "priority": i++,
+          "priority": i,
           "active": i == 1 ? true : false,
           "accept": 0,
         };
@@ -221,7 +222,8 @@ class GroupTime {
             .doc(groupId)
             .collection('pending')
             .add(scheduleInfo);
-        if (i > 10) {
+        if (i++ > 10) {
+          print('break');
           break;
         }
       }

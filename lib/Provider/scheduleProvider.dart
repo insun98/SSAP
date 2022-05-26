@@ -77,7 +77,7 @@ class ScheduleProvider with ChangeNotifier {
                 .where('member', arrayContains: curUserID)
                 .get()
                 .then((value) async {
-              //groupSchedules.clear();
+              groupSchedules.clear();
               for (final group in value.docs) {
                 print('group: ${group.id}');
                 await FirebaseFirestore.instance
@@ -86,7 +86,7 @@ class ScheduleProvider with ChangeNotifier {
                     .collection('confirmed')
                     .snapshots()
                     .listen((value) {
-                  groupSchedules.clear();
+                  //groupSchedules.clear();
                   for (final schedule in value.docs) {
                     print('schedule: ${schedule.id}');
                     if (schedule.data().isEmpty) {
@@ -120,11 +120,11 @@ class ScheduleProvider with ChangeNotifier {
   }
 
   void addSchedule(
-    String name,
-    DateTime from,
-    DateTime to,
-    String type,
-  ) async {
+      String name,
+      DateTime from,
+      DateTime to,
+      String type,
+      ) async {
     Map<String, dynamic> scheduleInfo = <String, dynamic>{
       "schedule name": name,
       "schedule start": Timestamp.fromDate(from),
@@ -202,7 +202,7 @@ class ScheduleProvider with ChangeNotifier {
         _friendSchedules.add(
           Meeting(
             eventName:
-                fprivate ? 'busy' : schedule.data()['schedule name'] as String,
+            fprivate ? 'busy' : schedule.data()['schedule name'] as String,
             from: schedule.data()['schedule start'].toDate(),
             to: schedule.data()['schedule end'].toDate(),
             isAllDay: false,

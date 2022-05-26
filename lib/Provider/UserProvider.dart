@@ -32,37 +32,51 @@ class UserProvider extends ChangeNotifier {
     );
 
     FirebaseAuth.instance.userChanges().listen((user) {
+      // FirebaseFirestore.instance
+      //     .collection('user')
+      //     .doc(FirebaseAuth.instance.currentUser!.uid)
+      //     .snapshots()
+      //     .listen((snapshot) {
+      //   if (snapshot.exists) {
+      //     _singleUser.name = snapshot.data()!['name'];
+      //     _singleUser.id = snapshot.data()!['id'];
+      //     _singleUser.uid = snapshot.data()!['uid'];
+      //     _singleUser.image = snapshot.data()!['image'];
+      //     _singleUser.Friend = snapshot.data()!['Friend'];
+      //   }
+      //   print(_singleUser.name);
+      //   notifyListeners();
+      // });
       FirebaseFirestore.instance
-          .collection('user')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .snapshots()
-          .listen((snapshot) {
-        if (snapshot.exists) {
-          _singleUser.name = snapshot.data()!['name'];
-          _singleUser.id = snapshot.data()!['id'];
-          _singleUser.uid = snapshot.data()!['uid'];
-          _singleUser.image = snapshot.data()!['image'];
-          _singleUser.Friend = snapshot.data()!['Friend'];
-        }
-        print(_singleUser.name);
-        notifyListeners();
-      });
-      _userSubscription = FirebaseFirestore.instance
           .collection('user')
           .snapshots()
           .listen((snapshot) {
         _users = [];
 
+
         for (final document in snapshot.docs) {
-          _users.add(
-            userInfo(
-              name: document.data()['name'] as String,
-              id: document.data()['id'] as String,
-              uid: document.data()["uid"],
-              image: document.data()["image"],
-              Friend: document.data()["Friend"],
-            ),
-          );
+          if(document.data()['uid']==FirebaseAuth.instance.currentUser!.uid) {
+            _singleUser.name = document.data()['name'] as String;
+            _singleUser.id = document.data()['id'] as String;
+            _singleUser.uid = document.data()["uid"];
+            _singleUser.image = document.data()["image"];
+            _singleUser.Friend =document.data()["Friend"];
+          }
+          // document.data()['uid']==FirebaseAuth.instance.currentUser!.uid
+            _users.add(
+              userInfo(
+                name: document.data()['name'] as String,
+                id: document.data()['id'] as String,
+                uid: document.data()["uid"],
+                image: document.data()["image"],
+                Friend: document.data()["Friend"],
+
+              ),
+            );
+
+
+
+          notifyListeners();
         }
         notifyListeners();
       });
@@ -166,7 +180,7 @@ class UserProvider extends ChangeNotifier {
 
   userInfo searchUserwithId(String userId) {
     for (var user in _users) {
-      if (user.id == userId) return user;
+      if (user.uid == userId) return user;
     }
     notifyListeners();
     return singleUser;

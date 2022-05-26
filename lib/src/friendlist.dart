@@ -347,6 +347,7 @@ class _FriendLIstState extends State<FriendLIst> {
                   children: [
                     Text(
                       "Friends ${user.singleUser.Friend.length}",
+
                       style: TextStyle(color: Colors.grey, fontSize: 15),
                     ),
                   ],
@@ -357,8 +358,12 @@ class _FriendLIstState extends State<FriendLIst> {
                       padding: const EdgeInsets.all(8),
                       itemCount: user.singleUser.Friend.length,
                       itemBuilder: (BuildContext context, int index) {
+                        // if(user.singleUser.Friend[index]){
+                        //
+                        // }
                         userInfo? friendUser =
                             user.searchUserwithId(user.singleUser.Friend[index]);
+                        // user.users[index];
                         return SizedBox(
                           height: 30,
                           child: TextButton(
@@ -366,7 +371,7 @@ class _FriendLIstState extends State<FriendLIst> {
                               context
                                   .read<ScheduleProvider>()
                                   .getFriendSchedules(
-                                      "${user.singleUser.Friend[index].id}");
+                                      user.singleUser.Friend[index].uid);
                               //  's2MVJDiwX7heYDR5xiD07mi6AKC2'
                               Navigator.pushNamed(context, '/friendCalendar');
 

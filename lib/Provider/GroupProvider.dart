@@ -72,25 +72,7 @@ class GroupProvider extends ChangeNotifier {
         }
         notifyListeners();
       });
-      _userSubscription =FirebaseFirestore.instance
-          .collection('user')
-          .snapshots()
-          .listen((snapshot) {
-        _users = [];
 
-        for (final document in snapshot.docs) {
-          _users.add(
-            userInfo(
-              name: document.data()['name'] as String,
-              id: document.data()['id'] as String,
-              uid: document.data()["uid"],
-              image: document.data()["image"],
-              Friend: document.data()["Friend"],
-            ),
-          );
-        }
-        notifyListeners();
-      });
 
    
   });

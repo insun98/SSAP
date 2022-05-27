@@ -152,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               title: const Text('My Friend List'),
               onTap: () {
-                userProvider.setFriend(userProvider.singleUser.id);
+
                 Navigator.pushNamed(context, '/friendlist');
               },
             ),

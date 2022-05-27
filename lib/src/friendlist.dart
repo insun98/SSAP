@@ -24,6 +24,12 @@ class FriendLIst extends StatefulWidget {
 
 class _FriendLIstState extends State<FriendLIst> {
   // User? user = FirebaseAuth.instance.currentUser;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  signOut() async {
+    await auth.signOut();
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => LoginWidget()));
+  }
   bool status = false;
   bool month = false;
   final List<Meeting> meetings = ScheduleProvider().getSchedules;
@@ -31,42 +37,6 @@ class _FriendLIstState extends State<FriendLIst> {
   final CalendarController _controller = CalendarController();
   var currentUser = FirebaseAuth.instance.currentUser;
   CollectionReference users = FirebaseFirestore.instance.collection('user');
-
-  // Future<String> getUserDoc(String UserId) async {
-  //   DocumentReference documentReference = users.doc(UserId);
-  //   String data;
-  //   await documentReference.get().then((snapshot) {
-  //     data = snapshot!.data()?.['name'].toString();
-  //   });
-  //   return specie;
-  // }
-  // Future<String> getUserDocName(String UserId) async {
-  //   var data;
-  //
-  //   await users!
-  //       .doc(UserId)
-  //       .get()
-  //       .then((doc) => {data = doc.data()})
-  //       .catchError((error) =>
-  //           {print("Error on get data from User"), print(error.toString())});
-  //
-  //   String userName = data["name"];
-  //   return userName;
-  // }
-  //
-  // Future<String> getUserDocID(String UserId) async {
-  //   var data;
-  //
-  //   await users!
-  //       .doc(UserId)
-  //       .get()
-  //       .then((doc) => {data = doc.data()})
-  //       .catchError((error) =>
-  //           {print("Error on get data from User"), print(error.toString())});
-  //
-  //   String userID = data["id"];
-  //   return userID;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -104,8 +74,28 @@ class _FriendLIstState extends State<FriendLIst> {
                 Icons.notifications,
                 color: Color(0xFFB9C98C),
               )),
-
-
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  month = true;
+                  if (kDebugMode) {
+                    print(month);
+                  }
+                });
+              },
+              icon: const Icon(
+                Icons.search,
+                color: Color(0xFFB9C98C),
+              )),
+          IconButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddGroupPage()));
+              },
+              icon: const Icon(
+                Icons.person_add_alt_1,
+                color: Color(0xFFB9C98C),
+              )),
         ],
       ),
       drawer: Drawer(
@@ -205,78 +195,13 @@ class _FriendLIstState extends State<FriendLIst> {
             ListTile(
               title: const Text('Sign out'),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginWidget()),
-                );
+                signOut();
               },
             ),
           ],
         ),
       ),
-      body:
-      // Consumer<GroupProvider>(
-      //   builder: (context, group, _) => SafeArea(
-      //     child: Column(
-      //       crossAxisAlignment: CrossAxisAlignment.start,
-      //       children: [
-      //         Container(
-      //           margin: const EdgeInsets.all(10),
-      //           child: Column(
-      //             crossAxisAlignment: CrossAxisAlignment.start,
-      //             children: [
-      //               const SizedBox(
-      //                 height: 30,
-      //               ),
-      //               const Divider(
-      //                 color: Colors.grey,
-      //               ),
-      //               SizedBox(
-      //
-      //                   height:500,
-      //                   child: ListView.separated(
-      //                     padding: const EdgeInsets.all(8),
-      //                     itemCount: group.groups.length,
-      //                     itemBuilder: (BuildContext context, int index) {
-      //                       return Dismissible(
-      //                         key: UniqueKey(),
-      //                         child: SizedBox(
-      //                           height: 50,
-      //                           child: Row(children:[TextButton(
-      //                             onPressed: ()  async {
-      //                               groupInfo groupinfo = await group.setGroup(group.groups[index].docId);
-      //                               print("group: ${groupinfo.groupName}, ${group.groups[index].docId}");
-      //                               Navigator.pushNamed(context, '/viewGroup');
-      //
-      //                             },
-      //                             child: Text(
-      //                               "${group.groups[index].groupName}    (${group.groups[index].member.length})",
-      //                               style: TextStyle(color: Colors.black),
-      //                             ),
-      //                           ),
-      //
-      //
-      //
-      //                           ],
-      //
-      //                           ),
-      //                         ),
-      //                       );
-      //                     },
-      //                     separatorBuilder:
-      //                         (BuildContext context, int index) {
-      //                       return const Divider(color: Colors.grey,);
-      //                     },
-      //                   )),
-      //             ],
-      //           ),
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
-      //   resizeToAvoidBottomInset: true,
-      SafeArea(
+      body: SafeArea(
         child: Consumer<UserProvider>(
           builder: (context, user, _) => Container(
             padding: const EdgeInsets.all(10),
@@ -293,32 +218,12 @@ class _FriendLIstState extends State<FriendLIst> {
                     style: TextStyle(color: Colors.black),
                   ),
                   onTap: () {
-                    // Navigator.pushNamed(context, '/');
-                    // print(userProvider.singleUser.name);
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => MyHomePage()),
                     );
                   },
                 ),
-
-                // TextFormField(
-                //   controller: _controller,
-                //   decoration: const InputDecoration(
-                //     filled: true,
-                //     fillColor: Color(0xffE5E5E5),
-                //     hintText: 'Search by Id',
-                //   ),
-                //   onChanged: (value) {
-                //     setState(() {
-                //       if (_controller.text == null) {
-                //         user = groupProvider.searchUser(_controller.text)!;
-                //       }
-                //       String name = value;
-                //       user = groupProvider.searchUser(_controller.text)!;
-                //     });
-                //   },
-                // ),
                 const Divider(
                   color: Colors.grey,
                 ),
@@ -327,35 +232,28 @@ class _FriendLIstState extends State<FriendLIst> {
                   children: [
                     Text(
                       "Friends ${user.singleUser.Friend.length}",
-
-                      style: const TextStyle(color: Colors.grey, fontSize: 15),
+                      style: TextStyle(color: Colors.grey, fontSize: 15),
                     ),
                   ],
                 ),
-                Expanded(
-                    //height: 700,
+                SizedBox(
+                    height: 400,
                     child: ListView.separated(
                       padding: const EdgeInsets.all(8),
-                      itemCount: user.users.length,
+                      itemCount: user.singleUser.Friend.length,
                       itemBuilder: (BuildContext context, int index) {
-                        // if(user.singleUser.Friend[index]){
-                        //
-                        // }
-                        // userInfo friendUser =
-                        // user.searchUserwithId(user.singleUser.Friend[index]);
-                        // user.users[index];
+                        singleuserInfo friendUser = user
+                            .searchUserwithId(user.singleUser.Friend[index]);
+                        String friendID = user.singleUser.Friend[index].trim();
                         return SizedBox(
                           height: 30,
                           child: TextButton(
                             onPressed: () {
                               context
                                   .read<ScheduleProvider>()
-                                  .getFriendSchedules(
-                                  user.users[index].uid);
-                              //  's2MVJDiwX7heYDR5xiD07mi6AKC2'
-                              Navigator.pushNamed(context, '/friendCalendar');
+                                  .getFriendSchedules(friendID);
 
-                              //  friendProvider.addFriend();
+                              Navigator.pushNamed(context, '/friendCalendar');
                             },
                             child: Row(
                               children: [
@@ -363,18 +261,8 @@ class _FriendLIstState extends State<FriendLIst> {
                                   Icons.account_circle,
                                   color: Colors.black,
                                 ),
-                                // future.then((val) {
-                                //   // int가 나오면 해당 값을 출력
-                                //   print('val: $val');
-                                // }).catchError((error) {
-                                //   // error가 해당 에러를 출력
-                                //   print('error: $error');
-                                // });
                                 Text(
-                                  "${user.users[index].name} (${user.users[index].id})",
-                                  // getUserDocName(user.singleUser.Friend[index].toString()).then((value) => null
-                                  //"${getUserDocName(user.singleUser.Friend[index].toString())}"+"${getUserDocID(user.singleUser.Friend[index].toString())}"
-                                  //"${users.doc(user.singleUser.Friend[index].toString()).get()} (${users.doc(user.singleUser.Friend[index].toString()).get()})"
+                                  "         ${friendUser.name}  (${friendUser.id})",
                                   style: TextStyle(color: Colors.black),
                                 ),
                               ],
@@ -386,31 +274,12 @@ class _FriendLIstState extends State<FriendLIst> {
                         return const Divider();
                       },
                     )),
-                // RadioGrou
-                //           users: groupProvider.user,
-                //         ),
               ],
             ),
           ),
         ),
       ),
-
-      resizeToAvoidBottomInset: true,
-      // Container(
-      //   child: Column(
-      //     children: [
-      //       ListTile(
-      //           title: Text('노은호(eunho111'),
-      //           onTap: () {
-      //             context.read<ScheduleProvider>().getFriendSchedules('s2MVJDiwX7heYDR5xiD07mi6AKC2');
-      //             Navigator.pushNamed(
-      //               context,
-      //               '/friendCalendar'
-      //             );
-      //           })
-      //     ],
-      //   ),
-      // ),
+      resizeToAvoidBottomInset: false,
     );
   }
 }

@@ -13,60 +13,87 @@ class UserProvider extends ChangeNotifier {
     init();
   }
 
-  userInfo _singleUser =
-  userInfo(name: "",
-      uid: "",
-      id: "",
-      image: "",
-      Friend: []);
+  singleuserInfo _singleUser =
+  singleuserInfo(name: "", uid: "", id: "", image: "", Friend: []);
 
-  userInfo get singleUser => _singleUser;
-  List<userInfo> _users = [];
+  singleuserInfo get singleUser => _singleUser;
+  List<singleuserInfo> _users = [];
 
-  List<userInfo> get users => _users;
-  StreamSubscription<DocumentSnapshot>? _userSubscription;
-
-  // List<userInfo> _users = [];
-  //
-  // StreamSubscription<QuerySnapshot>? _userSubscription;
+  List<singleuserInfo> get users => _users;
+  StreamSubscription<QuerySnapshot>? _userSubscription;
 
   Future<void> init() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
-
-    var snapshot = FirebaseFirestore.instance
-        .collection('user')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get().then((value) =>
-    {
-      _singleUser.name = value.data()!['name'],
-      _singleUser.id = value.data()!['id'],
-      _singleUser.uid = value.data()!['uid'],
-      _singleUser.image = value.data()!['image'],
-      _singleUser.Friend = value.data()!['Friend']
-    });
-    print(_singleUser.name);
-  }
-
-
-  userInfo setFriend(String uid) {
-
-    for (var friend in _singleUser.Friend) {
+    FirebaseAuth.instance.userChanges().listen((user) {
       FirebaseFirestore.instance
           .collection('user')
-          .doc(friend)
-          .get().then((value) {  _users.add(userInfo(
-        id: value.data()!['id'],
-        uid: value.data()!['uid'],
-        image: value.data()!['image'],
-        name: value.data()!['name'],
-        Friend: value.data()!['Friend'],
+          .snapshots()
+          .listen((snapshot) {
+        _users = [];
 
-      ));
+        for (final document in snapshot.docs) {
+          if (document.data()['uid'] ==
+              FirebaseAuth.instance.currentUser!.uid) {
+            _singleUser.name = document.data()['name'] as String;
+            _singleUser.id = document.data()['id'] as String;
+            _singleUser.uid = document.data()["uid"];
+            _singleUser.image = document.data()["image"];
+            _singleUser.Friend = document.data()["Friend"];
+          }
+          // document.data()['uid']==FirebaseAuth.instance.currentUser!.uid
+          _users.add(
+            singleuserInfo(
+              name: document.data()['name'] as String,
+              id: document.data()['id'] as String,
+              uid: document.data()["uid"],
+              image: document.data()["image"],
+              Friend: document.data()["Friend"],
+            ),
+          );
+
+          notifyListeners();
+        }
+        notifyListeners();
       });
+
       notifyListeners();
+    });
+  }
+
+  void clear() {
+    notifyListeners();
+  }
+
+  singleuserInfo searchUserwithId(String userId) {
+    for (var user in _users) {
+      String freindId = userId.trim();
+      String user_ID = user.uid.trim();
+
+      if (user_ID.compareTo(freindId) == 0) {
+        // print("Real friend ID : ${userId}");
+        // print("Real user.uid : ${user.uid}");
+        return user;
+      }
     }
+    notifyListeners();
     return singleUser;
   }
 }
 
+class singleuserInfo {
+  singleuserInfo(
+      {required this.name,
+        required this.uid,
+        required this.id,
+        required this.image,
+        required this.Friend});
 
+  String name;
+  String uid;
+  String id;
+  String image;
+  List<dynamic> Friend;
+}

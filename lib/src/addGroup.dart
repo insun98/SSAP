@@ -261,7 +261,7 @@ class _AddGroupScheduleState extends State<AddGroupSchedule> {
   DateTime endTime =
   DateTime.parse(DateTime.now().add(const Duration(days: 3)).toString());
   final TextEditingController _controller1 = TextEditingController();
-  final TextEditingController _hourController = TextEditingController(text: '1');
+  final TextEditingController _hourController = TextEditingController(text: '60');
   final TextEditingController _minController = TextEditingController();
 
   //List<userInfo> members = [];

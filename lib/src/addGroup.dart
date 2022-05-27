@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shrine/src/ViewGroup.dart';
 
 import '../Provider/GroupProvider.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import '../Provider/groupTime.dart';
 import '../Provider/scheduleProvider.dart';
 import '../Provider/UserProvider.dart';
@@ -191,11 +191,12 @@ class RadioGroupWidget extends State<RadioGroup> {
 
                   String groupDocId = await groupProvider.addGroup(
                       members, _controller.text);
-                  print("gg${groupDocId}");
+                  print("${groupDocId}");
 
-                  await groupProvider.setGroup(groupDocId);
-
-                  Navigator.pushNamed(context, '/viewGroup');
+                  groupInfo one = await groupProvider.setGroup(groupDocId);
+                  if(one.groupName.isNotEmpty) {
+                    Navigator.pushNamed(context, '/viewGroup');
+                  }
                 },
 
 

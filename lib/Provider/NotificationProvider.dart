@@ -124,8 +124,6 @@ class NotificationProvider with ChangeNotifier {
           .get()
           .then((value) {
 
-
-        print("good");
           members = value.data()!["member"];
           print("member ${members.length}");
           member = members.length;

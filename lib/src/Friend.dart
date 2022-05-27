@@ -67,7 +67,7 @@ class _AddFriendState extends State<AddFriend> {
                 TextButton(
                   onPressed: () {
                     _controller.clear();
-                    friendProvider.addFriend(user.uid);
+                    friendProvider.addFriendRequest(user.uid);
                     group.clear();
 
 

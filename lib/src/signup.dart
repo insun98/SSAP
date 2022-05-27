@@ -231,5 +231,9 @@ class _SignupPageState extends State<SignupPage> {
       'uid': FirebaseAuth.instance.currentUser!.uid,
       'Friend': [],
     });
+
+    FirebaseFirestore.instance
+        .collection('notification')
+        .doc(FirebaseAuth.instance.currentUser!.uid).set({"friend":[],"group":[]});
   }
 }

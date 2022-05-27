@@ -199,26 +199,31 @@ class _ViewGroupState extends State<ViewGroup> {
                       ),
                       SizedBox(
                           height: 100,
-                          child: ListView.builder(
+                          child: groupProvider.members.isNotEmpty? ListView.builder(
                             padding: const EdgeInsets.all(8),
                             itemCount:  groupProvider.singleGroup.member.length,
 
                             itemBuilder: (BuildContext context, int index)  {
 
 
-                              return Consumer<GroupProvider>(
+                              return
 
-                                builder: (context, group, _)=>SizedBox(
-                                  height: 20,
+                                  SizedBox(
+                                  height: 30,
                                   child: Text(
                                     "${groupProvider.members[index].name} (${groupProvider.members[index].id})",
                                     style: const TextStyle(color: Colors.black,fontSize: 17),
                                   ),
 
-                                ),
-                              );
-                            },
-                          )),
+                                );
+
+
+
+                            }
+                          ):Text(""),
+
+
+                ),
                       Text('Incoming Meeting',
                           style: TextStyle(
                               fontSize: 17, color: Colors.grey[600])),
@@ -252,7 +257,7 @@ class _ViewGroupState extends State<ViewGroup> {
                       ),
                       Text('Unconfirmed Meeting',
                           style: TextStyle(
-                              fontSize: 25, color: Colors.grey[600])),
+                              fontSize: 17, color: Colors.grey[600])),
                       const Divider(
                         height: 8,
                         thickness: 1,
@@ -262,7 +267,7 @@ class _ViewGroupState extends State<ViewGroup> {
                       ),
                       SizedBox(
                         height: 30,
-                        child: Row(children:[Expanded(child: Text(
+                        child: groupProvider.pendingMeeting.eventName.isNotEmpty?Row(children:[Expanded(child: Text(
                           "${groupProvider.pendingMeeting.eventName} (${groupProvider.pendingMeeting.from})",
                           style: const TextStyle(color: Colors.black,fontSize: 15
                           ),
@@ -277,7 +282,7 @@ class _ViewGroupState extends State<ViewGroup> {
                             ),),
                           SizedBox(width:10),
                         ],
-                        ),
+                        ):Text(""),
 
                       ),
                     ],

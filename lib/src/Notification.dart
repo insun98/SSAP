@@ -207,13 +207,21 @@ class _NotificationPageState extends State<NotificationPage> {
                                         meeting.eventName != "" ?ElevatedButton(
                                           child: const Text('accept'),
                                           style: ElevatedButton.styleFrom(primary: Color(0xffB9C98C)),
-                                          onPressed: () async { notify.acceptMeeting(notify.notificationInfo.Group[index]);},
+                                          onPressed: () async { notify.acceptMeeting(notify.notificationInfo.Group[index]);  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                            content: Text('Accepted group meeting'),
+                                          ));},
                                         ):Text(""),
                                         SizedBox(width:30),
                                         meeting.eventName != ""? ElevatedButton(
                                           child: const Text('deny'),
                                           style: ElevatedButton.styleFrom(primary: Color(0xffB9C98C)),
-                                          onPressed: ()  async {print("good"); notify.denyMeeting(notify.notificationInfo.Group[index]);},
+                                          onPressed: ()  async {ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                            content: Text('Denied the group meeting '),
+                                          ));print("good"); notify.denyMeeting(notify.notificationInfo.Group[index]);
+                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                            content: Text('New group meeting recommended'),
+                                          ));
+                                          },
 
 
                                         ):Text(""),
@@ -240,7 +248,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                 padding: const EdgeInsets.all(8),
                                 itemCount:  notify.notificationInfo.Friend.length,
                                 itemBuilder: (BuildContext context, int index)  {
-                                  groupProvider.searchUser(notify.notificationInfo.Friend[index]);
+                                userInfo  user =   groupProvider.searchUser(notify.notificationInfo.Friend[index]);
                                   // print("user: ${notify.notificationInfo.Friend[index]}");
                                   return SizedBox(
                                     height: 50,
@@ -251,13 +259,17 @@ class _NotificationPageState extends State<NotificationPage> {
                                         ElevatedButton(
                                           child: const Text('accept'),
                                           style: ElevatedButton.styleFrom(primary: Color(0xffB9C98C)),
-                                          onPressed: () async {friendProvider.addFriend(notify.notificationInfo.Friend[index]);notify.remove(notify.notificationInfo.Friend[index]);},
+                                          onPressed: () async {friendProvider.addFriend(notify.notificationInfo.Friend[index]);notify.remove(notify.notificationInfo.Friend[index]);ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                            content: Text('Accepted friend request'),
+                                          ));},
                                         ),
                                         SizedBox(width:30),
                                         ElevatedButton(
                                           child: const Text('deny'),
                                           style: ElevatedButton.styleFrom(primary: Color(0xffB9C98C)),
-                                          onPressed: () async {notify.remove(notify.notificationInfo.Friend[index]);},
+                                          onPressed: () async {notify.remove(notify.notificationInfo.Friend[index]); ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                            content: Text('Denied friend request'),
+                                          ));},
 
 
                                         ),

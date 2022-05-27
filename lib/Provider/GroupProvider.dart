@@ -20,19 +20,27 @@ class GroupProvider extends ChangeNotifier {
   String _defaultImage = "";
   String value = "ASC";
   int userIndex = 0;
-  userInfo _singleUser = userInfo(name:"", uid:"", id: "", image:  "", Friend: []);
+  userInfo _singleUser =
+      userInfo(name: "", uid: "", id: "", image: "", Friend: []);
   userInfo get singleUser => _singleUser;
   List<userInfo> _users = [];
   List<userInfo> get users => _users;
   groupInfo _singleGroup = groupInfo(groupName: "", docId: "", member: []);
-  groupInfo get singleGroup  => _singleGroup;
+  groupInfo get singleGroup => _singleGroup;
   List<groupInfo> _groups = [];
   List<groupInfo> get groups => _groups;
-  List<userInfo> _members =[];
+  List<userInfo> _members = [];
   List<userInfo> get members => _members;
   List<Meeting> _confirmedSchedules = [];
   List<Meeting> get confirmedSchedules => _confirmedSchedules;
-  Meeting _pendingMeeting = Meeting(eventName: "", background:  const Color(0xFFB9C98C), docId: "", type: '', to: DateTime.now(), from: DateTime.now(), isAllDay: false);
+  Meeting _pendingMeeting = Meeting(
+      eventName: "",
+      background: const Color(0xFFB9C98C),
+      docId: "",
+      type: '',
+      to: DateTime.now(),
+      from: DateTime.now(),
+      isAllDay: false);
   Meeting get pendingMeeting => _pendingMeeting;
   StreamSubscription<QuerySnapshot>? _userSubscription;
   StreamSubscription<QuerySnapshot>? _groupSubscription;
@@ -49,12 +57,10 @@ class GroupProvider extends ChangeNotifier {
     _defaultImage = downloadUrl;
 
     FirebaseAuth.instance.userChanges().listen((user) {
-
-      _groupSubscription =
-          FirebaseFirestore.instance
+      _groupSubscription = FirebaseFirestore.instance
           .collection('group')
-          .where('member', arrayContains: FirebaseAuth.instance.currentUser?.uid)
-
+          .where('member',
+              arrayContains: FirebaseAuth.instance.currentUser?.uid)
           .snapshots()
           .listen((snapshot) {
         _groups = [];
@@ -72,38 +78,33 @@ class GroupProvider extends ChangeNotifier {
         }
         notifyListeners();
       });
-
-
-   
-  });
+    });
   }
 
-userInfo searchUser(String uid) {
-  userInfo user= userInfo(name: "", id: "", image: "", uid: "", Friend: []);
-  FirebaseFirestore.instance
-      .collection('user')
-      .doc(uid)
-      .snapshots()
-      .listen((snapshot) {
-    if (snapshot.exists) {
-      user.name = snapshot.data()!['name'];
-      user.id = snapshot.data()!['id'];
-      user.uid = snapshot.data()!['uid'];
-      user.image = snapshot.data()!['image'];
+  userInfo searchUser(String uid) {
+    userInfo user = userInfo(name: "", id: "", image: "", uid: "", Friend: []);
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(uid)
+        .snapshots()
+        .listen((snapshot) {
+      if (snapshot.exists) {
+        singleUser.name = snapshot.data()!['name'];
+        singleUser.id = snapshot.data()!['id'];
+        singleUser.uid = snapshot.data()!['uid'];
+        singleUser.image = snapshot.data()!['image'];
 
-      user.Friend = snapshot.data()!['Friend'];
-    }
-    notifyListeners();
-  });
+        singleUser.Friend = snapshot.data()!['Friend'];
+      }
+      notifyListeners();
+    });
 
-  return user;
+    return user;
   }
-
-
 
   userInfo searchingUser(String userId) {
-    userInfo user = userInfo(name: "", id: "", image: "", uid: "", Friend:[]);
-     FirebaseFirestore.instance
+    userInfo user = userInfo(name: "", id: "", image: "", uid: "", Friend: []);
+    FirebaseFirestore.instance
         .collection('user')
         .where('id', isEqualTo: userId)
         .snapshots()
@@ -120,11 +121,7 @@ userInfo searchUser(String uid) {
     return user;
   }
 
-
-
-
   String addGroup(List<dynamic> members, String groupName) {
-
     String id = FirebaseFirestore.instance.collection('group').doc().id;
     FirebaseFirestore.instance
         .collection('group')
@@ -139,75 +136,84 @@ userInfo searchUser(String uid) {
   }
 
   groupInfo setGroup(String groupId) {
+    //  singleGroup.groupName="";
+    //  singleGroup.docId="";
 
-  FirebaseFirestore.instance
-      .collection('group')
-      .doc(groupId).snapshots()
-      .listen((snapshot) {
-    if (snapshot.data() != null) {
-      singleGroup.groupName = snapshot.data()!['groupName'];
-      singleGroup.member = snapshot.data()!['member'];
-      singleGroup.docId = groupId;
+    FirebaseFirestore.instance
+        .collection('group')
+        .doc(groupId)
+        .get()
+        .then((value) {
+      if (value.data() != null) {
+        singleGroup.groupName = value.data()!['groupName'];
+        singleGroup.member = value.data()!['member'];
+        singleGroup.docId = groupId;
+      }
+    });
 
-
-    }});
-    for(var member in singleGroup.member){
+    for (var member in singleGroup.member) {
       FirebaseFirestore.instance
           .collection('user')
-              .doc(member).snapshots()
-              .listen((snapshot) {
-                members.add(userInfo(
-                  id: snapshot.data()!['id'],
-                    uid:snapshot.data()!['uid'],
-                  image: snapshot.data()!['image'],
-                  name: snapshot.data()!['name'],
-                  Friend:snapshot.data()!['Friend'],
-                ));
-
-
+          .doc(member)
+          .snapshots()
+          .listen((snapshot) {
+        members.add(userInfo(
+          id: snapshot.data()!['id'],
+          uid: snapshot.data()!['uid'],
+          image: snapshot.data()!['image'],
+          name: snapshot.data()!['name'],
+          Friend: snapshot.data()!['Friend'],
+        ));
       });
+    }
+
+    FirebaseFirestore.instance
+        .collection("group")
+        .doc(groupId)
+        .collection("pending")
+        .where('active', isEqualTo: true)
+        .snapshots()
+        .listen((snapshot) {
+
+      if (snapshot.docs.isNotEmpty) {
+        pendingMeeting.eventName = snapshot.docs[0].data()['schedule name'];
+        pendingMeeting.to = snapshot.docs[0].data()['schedule end'].toDate();
+        pendingMeeting.from =
+            snapshot.docs[0].data()['schedule start'].toDate();
+        pendingMeeting.accept = snapshot.docs[0].data()['accept'];
+      }else{
+        pendingMeeting.eventName ="";
+
+
       }
-  FirebaseFirestore.instance.collection("group").doc(
-      groupId).collection("pending").where('active',isEqualTo: true).snapshots().listen((snapshot) {
-    if( snapshot.docs.isNotEmpty) {
-      pendingMeeting.eventName=snapshot.docs[0].data()['schedule name'];
-      pendingMeeting.to= snapshot.docs[0].data()['schedule end'].toDate();
-      pendingMeeting.from=snapshot.docs[0].data()['schedule start'].toDate();
-      pendingMeeting.accept =snapshot.docs[0].data()['accept'];
-    }
 
-    notifyListeners();
-  });
-  FirebaseFirestore.instance
-      .collection('group')
-      .doc(groupId)
-      .collection('confirmed')
-      .snapshots()
-      .listen((snapshot) {
-    _confirmedSchedules = [];
+      notifyListeners();
+    });
+    FirebaseFirestore.instance
+        .collection('group')
+        .doc(groupId)
+        .collection('confirmed')
+        .snapshots()
+        .listen((snapshot) {
+      confirmedSchedules.clear();
 
-    for (final document in snapshot.docs) {
-      _confirmedSchedules.add(
-        Meeting(
-            eventName: document.data()['schedule name'],
-            background:  const Color(0xFFB9C98C),
-            docId: document.id,
-            type: document.data()['type'],
-            to: document.data()['schedule end'],
-            from: document.data()['schedule start'],
-            isAllDay: false
+      for (final document in snapshot.docs) {
+        confirmedSchedules.add(
+          Meeting(
+              eventName: document.data()['schedule name'],
+              background: const Color(0xFFB9C98C),
+              docId: document.id,
+              type: document.data()['type'],
+              to: document.data()['schedule end'],
+              from: document.data()['schedule start'],
+              isAllDay: false),
+        );
+      }
+      notifyListeners();
+    });
 
-        ),
-      );
-    }
-    notifyListeners();
-  });
-
-return singleGroup;
+    return singleGroup;
   }
-
-
-
 
   Future<void> deleteMember(String docId) async {
     var val = []; //blank list for add elements which you want to delete
@@ -235,7 +241,6 @@ return singleGroup;
       await doc.reference.delete();
     }
 
-
     FirebaseFirestore.instance.collection('group').doc(docId).delete();
     notifyListeners();
   }
@@ -254,9 +259,11 @@ return singleGroup;
     });
     notifyListeners();
   }
-  void clear(){
+
+  void clear() {
     notifyListeners();
   }
+
   Future<String> UploadFile(File image) async {
     final storageRef = FirebaseStorage.instance.ref();
     final filename = "${DateTime.now().millisecondsSinceEpoch}.png";
@@ -268,13 +275,14 @@ return singleGroup;
     return downloadUrl;
   }
 }
+
 class userInfo {
   userInfo(
       {required this.name,
-        required this.uid,
-        required this.id,
-        required this.image,
-        required this.Friend});
+      required this.uid,
+      required this.id,
+      required this.image,
+      required this.Friend});
 
   String name;
   String uid;

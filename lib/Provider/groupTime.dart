@@ -227,13 +227,16 @@ class GroupTime {
         break;
       }
     }
-    var collection = await FirebaseFirestore.instance.collection('group').doc(
-        groupId)
-        .get();
-    members = collection.data()!["member"];
+
+    print("member:${members}");
+    var val = [];
+    val.add(groupId);
 
     for (var member in members) {
-
+      FirebaseFirestore.instance
+          .collection('notification')
+          .doc(member)
+          .update({"group": FieldValue.arrayUnion(val)});
     }
 
     return 0;
